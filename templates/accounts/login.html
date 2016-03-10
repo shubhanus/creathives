@@ -1,0 +1,63 @@
+<div class="video-modal" id="user-login">
+    <div class="gallery-header">
+        <h3 style="text-align: center;">Login or Register</h3>
+    </div>
+    <div class="video-modal-center">
+        <div style="height: 300px; margin-left: 110px; margin-top: 50px; width: 80%; border-top: 1px #b7b7b7 solid">
+            <div style="width: 40%; margin-left: 35%; margin-top: 5%;">
+                <div style="border: 1px #ccc solid; border-top: 0px; border-bottom: 0px; height: 350px;">
+                    <ul class="nav-categories">
+                        <li class="active" id="log">
+                            <a href="#">
+                                <img alt="all" src="/static/images/login.png">
+                                <span>Login</span>
+                            </a>
+                        </li>
+                        <li id="reg">
+                            <a href="#">
+                                <img alt="user-add" src="/static/images/glyphicons_006_user_add.png">
+                                <span>Register</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div id='dv-log' style="width: 80%; margin:25% 0% 0% 10%; display: block;">
+                        <form role="form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="text" required class="form-control" id="uname" placeholder="User Name">
+                            </div>
+
+                            <div class="form-group">
+                                <input type="password" required class="form-control" id="pwd" placeholder="Password">
+                            </div>
+                            <button id="login" class="btn btn-warning" style="float: right; width: 50%">Login</button>
+                        </form>
+                    </div>
+                    <div id='dv-reg' style="width: 80%; margin:10% 0% 0% 10%; display: none;">
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" required class="form-control" id="uname" placeholder="User Name">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" required class="form-control" id="fname" placeholder="Full Name">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" required class="form-control" id="Email" placeholder="Email">
+                            </div>
+
+                            <div class="form-group">
+                                <input type="password" required class="form-control" id="pwd" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" required class="form-control" id="cpwd"
+                                       placeholder="Re-Enter Password">
+                            </div>
+                            <button id="bt-reg" class="btn btn-warning" style="float: right; width: 50%">Register
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
