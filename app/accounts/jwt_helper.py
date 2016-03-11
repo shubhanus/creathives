@@ -10,14 +10,12 @@ def get_json_web_token(user):
     payload = {
         'user_id': user.id,
         'email': user.email,
-        'exp': datetime.utcnow() + datetime.timedelta(hours=1)
+        'exp': datetime.utcnow() +  api_settings.JWT_EXPIRATION_DELTA
     }
 
     payload['email'] = user.email
 
-    JWT_ALLOW_REFRESH = True
-
-    if JWT_ALLOW_REFRESH:
+    if api_settings.JWT_ALLOW_REFRESH:
         payload['orig_iat'] = timegm(
             datetime.utcnow().utctimetuple()
         )

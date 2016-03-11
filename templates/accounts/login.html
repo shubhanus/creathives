@@ -35,6 +35,7 @@
                     </div>
                     <div id='dv-reg' style="width: 80%; margin:10% 0% 0% 10%; display: none;">
                         <form role="form">
+                            {% csrf_token %}
                             <div class="form-group">
                                 <input type="text" required class="form-control" id="uname" placeholder="User Name">
                             </div>

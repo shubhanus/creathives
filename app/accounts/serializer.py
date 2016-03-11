@@ -1,4 +1,4 @@
-from gunicorn.config import User
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from app.accounts.jwt_helper import get_json_web_token
@@ -12,6 +12,5 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('token',)
 
     def get_json_web_token(self, obj):
-
         return get_json_web_token(obj)
 
