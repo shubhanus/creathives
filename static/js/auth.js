@@ -16,7 +16,10 @@ $('#login').on('click', function(e){
         'data' : JSON.stringify(data),
         'dataType': "json",
         'success': function(response) {
-            console.log(response)
+            localStorage.setItem('token', response);
+            $('#user-login').fadeOut();
+	        $('.body-overlay').fadeOut();
+	        $('body').css('overflow', 'scroll');
         }
     }).error(function(r){console.log(r)})
 });

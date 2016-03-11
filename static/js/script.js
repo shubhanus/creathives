@@ -38,17 +38,17 @@ $(document).ready(function(){
 			$('.leftPanel ul li').removeClass('active');
 			$('.deletePrompt').hide();
 			$(this).addClass('active');
-		})
+		});
 		$('.video-thumbnails.large ul li a').click(function(event){
 			event.preventDefault();
 			$('.video-thumbnails.large ul li a').removeClass('active');
 			$(this).addClass('active');
-		})
+		});
 		$('.video-thumbnails.small ul li a').click(function(event){
 			event.preventDefault();
 			$('.video-thumbnails.small ul li a').removeClass('active');
 			$(this).addClass('active');
-		})
+		});
 
 		$(".leftPanel").sticky({topSpacing:80});
 
@@ -93,7 +93,7 @@ $(document).ready(function(){
 	// Delete prompt
 	$('.deleteTrash').on('click', function(){
 		$(this).closest('li').find('.deletePrompt').show();
-	})
+	});
 
 
 	// Video modal open
@@ -101,18 +101,18 @@ $(document).ready(function(){
 		$('body').css('overflow', 'hidden');
 		$('.video-modal').fadeIn();
 		$('.body-overlay').fadeIn();
-	})
+	});
 	$('.btn-done').click(function(){
 		$('body').css('overflow', 'visible');
 		$('.video-modal').fadeOut();
 		$('.body-overlay').fadeOut();
-	})
+	});
 
     $('#user-login').css('height', '550px');
 	$('#user-login').css('top', '100px');
 	$('body').css('overflow', 'hidden');
 
 
-}) 
+});
 
 
