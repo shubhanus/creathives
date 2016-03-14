@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -40,4 +41,3 @@ def login_user(request):
     else:
         print "Non-POST Request"
         return Response("Wrong candidate")
-

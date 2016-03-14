@@ -1,8 +1,5 @@
 $(document).ready(function(){
 
-	$('#user-login').fadeIn();
-	$('.body-overlay').fadeIn();
-
 	// resize
 	function modalHeight() {
 		videoHeight = $(window).height();
@@ -107,7 +104,6 @@ $(document).ready(function(){
 		$('.video-modal').fadeOut();
 		$('.body-overlay').fadeOut();
 	});
-    $('.body-overlay').fadeOut();
 });
 
 
