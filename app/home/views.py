@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 
+@login_required()
 def index(request):
-    context = {}
-    context['request'] = request
-    print "index request is", request
-    return render(request, 'home/index.html', context)
+    # context = {}
+    # context['request'] = request
+    print "index"
+    return render(request, 'home/index.html')

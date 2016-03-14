@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    $('#user-login').fadeIn();
+	$('#user-login').fadeIn();
 	$('.body-overlay').fadeIn();
 
 	// resize
@@ -107,12 +107,7 @@ $(document).ready(function(){
 		$('.video-modal').fadeOut();
 		$('.body-overlay').fadeOut();
 	});
-
-    $('#user-login').css('height', '550px');
-	$('#user-login').css('top', '100px');
-	$('body').css('overflow', 'hidden');
-
-
+    $('.body-overlay').fadeOut();
 });
 
 
