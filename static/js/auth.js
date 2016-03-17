@@ -19,9 +19,10 @@ $('#login-btn').on('click', function(e){
         'data' : JSON.stringify(data),
         'dataType': "json",
         'success': function(response) {
-            localStorage.setItem('token', response);
-            var win = '//' + window.location.hostname + '/index/home/';
-            window.location = win;
+            //localStorage.setItem('token', response);
+            //var win = '//' + window.location.hostname + '/index/home/';
+            //window.location = win;
+            window.location = '/index/home/';
             //$('#user-login').fadeOut();
             //$('.body-overlay').fadeOut();
             //$('body').css('overflow', 'scroll');
@@ -35,6 +36,7 @@ $(function(){
     $.ajaxSetup({
        headers: {'X-CSRFToken': getCookie("csrftoken")}
    });
+
     login_win.fadeIn();
     $('.body-overlay').fadeIn();
     login_win.css('height', '550px');

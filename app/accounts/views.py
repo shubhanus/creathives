@@ -18,26 +18,26 @@ def login(request):
 def login_user(request):
     print 'login_user call'
     if request.method == 'POST':
-        print "Post method check passed"
+        # print "Post method check passed"
         data = JSONParser().parse(request)
-        print "JSON parsing passed"
+        # print "JSON parsing passed"
         email = data.get('email', None)
         password = data.get('password', None)
-        print email, password
+        # print email, password
         ac = authenticate(email=email, password=password)
-        print ac
+        # print ac
         if ac is not None:
-            print "authentication success"
+            # print "authentication success"
             auth_login(request, ac)
-            print "User logged in"
+            # print "User logged in"
             serial = UserSerializer(ac)
             return Response(serial.data, status=status.HTTP_200_OK)
         else:
-            print "Unauthorised"
+            # print "Unauthorised"
             return Response({
                 'status': 'Unauthorised',
                 'message': 'Wrong Username/passwords.'
             }, status=status.HTTP_401_UNAUTHORIZED)
     else:
-        print "Non-POST Request"
+        # print "Non-POST Request"
         return Response("Wrong candidate")
