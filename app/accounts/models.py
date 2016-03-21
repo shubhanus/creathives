@@ -15,7 +15,7 @@ class AccountManager(BaseUserManager):
         now = timezone.now()
         email = self.normalize_email(email)
         user = self.model( email=email, first_name=first_name, last_name=last_name, is_staff=is_staff,
-                          is_active=False, is_superuser=is_superuser, last_login=now,
+                           is_superuser=is_superuser, last_login=now,
                           date_joined=now, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -25,7 +25,7 @@ class AccountManager(BaseUserManager):
         now = timezone.now()
         email = self.normalize_email(email)
         user = self.model( email=email, is_staff=is_staff,
-                          is_active=False, is_superuser=is_superuser, last_login=now,
+                           is_superuser=is_superuser, last_login=now,
                           date_joined=now, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -38,7 +38,6 @@ class AccountManager(BaseUserManager):
 
     def create_superuser(self, email, password, **extra_fields):
         user = self._create_super_user( email, password, True, True, **extra_fields)
-        user.is_active = True
         user.save(using=self._db)
         return user
 

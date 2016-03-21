@@ -33,8 +33,9 @@ $(document).ready(function(){
 			$('#leftView').addClass('mob-none');
 			$('#rightView').removeClass('mob-none');
 			$('.leftPanel ul li').removeClass('active');
-			$('.deletePrompt').hide();
+			//$('.deletePrompt').hide();
 			$(this).addClass('active');
+			//alert('clicked')
 		});
 		$('.video-thumbnails.large ul li a').click(function(event){
 			event.preventDefault();
@@ -89,7 +90,7 @@ $(document).ready(function(){
 
 	// Delete prompt
 	$('.deleteTrash').on('click', function(){
-		$(this).closest('li').find('.deletePrompt').show();
+		$(this).closest('li').find('.deletePrompt').removeClass('hide');
 	});
 
 

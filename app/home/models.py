@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.db import models
-
 from app.accounts.models import Account
 
 
@@ -10,9 +9,7 @@ class Projects(models.Model):
 
     def __str__(self):
         return self.title
-
     description = models.TextField(max_length=300, default='No description', null=True)
-
     # IMAGE = '1'
     # MUSIC = '2'
     # VIDEO = '3'
@@ -23,29 +20,49 @@ class Projects(models.Model):
     #     (VIDEO, 'Video'),
     #     (ARTICLE, 'Article'),
     # )
-
     type = models.CharField(max_length=20, null=True)
     # main_url = models.TextField(max_length=200)
     date_created = models.DateTimeField('Project Date Update')
-    url_thumb_img = models.TextField(max_length=200, default='Project Image')
+    url_thumb_img = models.TextField(max_length=200, default='/static/user-temp-data/default.png')
 
     class Meta:
         db_table = "projects"
 
 
-
 class ProfileDetails(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     about = models.CharField(max_length=60, default='Tell Us Something About You')
-    display_picture = models.CharField(max_length=200, null=True)
+    display_picture = models.CharField(max_length=200, null=True, default='/static/images/user.png')
+    display_picture_top_small = models.CharField(max_length=200, null=True, default='/static/images/user-small.png')
 
     def __str__(self):
         return self.display_picture
-
-    cover_picture = models.CharField(max_length=200, null=True)
+    cover_picture = models.CharField(max_length=200, null=True, default='/static/images/banner1.png')
 
     class Meta:
-        db_table = "profile details"
+        db_table = "profile_details"
+
+
+class Media(models.Model):
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    name = models.CharField(max_length=40, default='untitled')
+    IMAGE = '1'
+    MUSIC = '2'
+    VIDEO = '3'
+    ARTICLE = '4'
+    MEDIA_TYPE_CHOICE = (
+        (IMAGE, 'Image'),
+        (MUSIC, 'Music'),
+        (VIDEO, 'Video'),
+        (ARTICLE, 'Article'),
+    )
+    type = models.CharField(max_length=2, choices=MEDIA_TYPE_CHOICE, null=True)
+    url = models.CharField(max_length=60, null=True)
+    thumb_img = models.CharField(max_length=60, default='/static/images/thumb.png')
+
+    class Meta:
+        db_table = 'Media'
 
 admin.site.register(Projects)
 admin.site.register(ProfileDetails)
+admin.site.register(Media)

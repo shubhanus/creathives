@@ -83,7 +83,7 @@
             </li>
             <li>
               <a href="">
-                <img src="/static/images/Header/articles.png" alt="articles">
+                <img  ="/static/images/Header/articles.png" alt="articles">
                 <div>Articles</div>
               </a>
             </li>
@@ -93,10 +93,18 @@
           <span>
             <a href=""><img src="/static/images/bell.png" alt="Notifications"></a>
           </span>
-          <span class="header-profilePic"><a href=""><img src="/static/images/user-small.png" alt="Username"></a>
+          <span class="header-profilePic"><a href="">
+{#              <img src="#}
+{#                {% if profile.display_picture_top_small %}#}
+{#                    {{ profile.display_picture_top_small }}#}
+{#                {% else %}#}
+{#                    /static/images/user-small.png#}
+{#                {% endif %}#}
+{#              "alt="User Name">#}
+              <img src="/static/images/user-small.png" alt="Username"></a>
           </span>
           <span>
-            <a href=""><img src="/static/images/arrow-down.png" alt="View"></a>
+            <a href="{% url 'auth:logout' %}?next=/"><img src="/static/images/arrow-down.png" alt="View"></a>
           </span>
         </div>
       </div>
@@ -109,4 +117,6 @@
     <img src="/static/images/banner1.png" alt="">
     <!-- Portfolio Edit -->
     <a href=""> <img class="edit-wall hide" src="/static/images/Edit/camera1.png" alt="Change"></a>
+      <input type="file" class="hide" name="prof_banner_update" id="banner-img">
+
   </section>
