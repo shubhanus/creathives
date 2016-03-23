@@ -237,6 +237,9 @@ function update_project_name(data) {
 /*-------------------------------------------*/
 
 /*---------Validation Handler-------------*/
+var proj_title = $('.media-body>h4');
+var proj_type = $('.media-body span');
+var proj_desc = $('.media-body p');
 
 var validation = {
     ReDefault: function (field) {
@@ -253,15 +256,28 @@ var validation = {
         val = field.text().trim();
         if(val == msg1 || val == msg2) return true;
         else return false;
+    },
+    checkDetails : function(){
+        if(validation.check_empty(proj_title, 'Project Title', 'Enter Project Title')){
+            validation.Require(proj_title, 'Enter Project Title');
+            return false;
+        }
+        if(validation.check_empty(proj_type, 'Project Type', '')){
+            validation.Require(proj_type, 'Enter Project Type');
+            return false;
+        }
+        if(validation.check_empty(proj_type, 'Enter Project Type', '')){
+            validation.Require(proj_type, 'Enter Project Type');
+            return false;
+        }
+        else return true;
     }
 };
 
 /*-----------------------------------------*/
 
 /*new project data insert*/
-var proj_title = $('.media-body>h4');
-var proj_type = $('.media-body span');
-var proj_desc = $('.media-body p');
+
 
 proj_title.on('focusin', function(e){
     if(validation.check_empty($(this), 'Project Title', 'Enter Project Title'))
@@ -483,15 +499,17 @@ $('#banner-img').on('change', function(e){
         })
     }
 });
-/*------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------*/
 
 /*----------------------------------Delete Project------------------------------------------------*/
 
-$('.no').on('click', function(){
+$('.no').on('click', function(e){
 		$(this).closest('li').find('.deletePrompt').addClass('hide');
+        e.stopPropagation();
+
 });
 
-$('.yes').on('click', function(){
+$('.yes').on('click', function(e){
     console.log('yes');
     var self = $(this);
     var id = self.closest('li').find('a').attr('data-project-id');
@@ -514,7 +532,8 @@ $('.yes').on('click', function(){
             }
     }).error(function (r) {
         console.log(r)
-    })
+    });
+    e.stopPropagation();
 });
 
 /*------------------------------------------------------------------------------------------------*/
@@ -524,10 +543,10 @@ $('.yes').on('click', function(){
     function validateUploadedMediaFormat(type, files){
         var validation;
         var approved_formats = {
-            'videos' : ['avi','mp4','m4v','3gp'],
-            'audios' : ['mp3','wav'],
-            'images' : ['png','jpg','jpeg'],
-            'articles' : ['doc','docx','pdf']
+            'video' : ['avi','mp4','m4v','3gp'],
+            'track' : ['mp3','wav'],
+            'image' : ['png','jpg','jpeg'],
+            'article' : ['doc','docx','pdf']
         };
 
         for(var i= 0;i<files.length;i++) {
@@ -555,36 +574,96 @@ $('.yes').on('click', function(){
 
 
 /*------------------------------------media upload---------------------------------------------*/
-
+var data_type;
 $('.media-tabs li img').on('click', function(e){
     e.preventDefault();
-    $('.media_all_upload').click();
-});
-
-$('.media_all_upload').on('change', function(e){
-    var files = this.files[0];
-    var type = $(this).attr('data-type');
-    if(!validateUploadedMediaFormat(type, files)){
+    data_type = $(this).attr('data-type');
+    $('.media_all_upload').attr('data-type', data_type);
+    console.log(!validation.checkDetails());
+    if(!validation.checkDetails()){
         return;
     }
-    else {
-        var img_obj = new FormData();
-        img_obj.append('cover_image', $img);
-        var url = 'http://creathives.com/index/home/profile_pic_change/';
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: img_obj,
-            processData: false,
-            contentType: false,
-            'success': function (res) {
-                data = JSON.parse(res);
-            }
-        }).error(function (r) {
-            console.log(r)
-        })
-    }
+    else
+        $('.media_all_upload').click();
 });
+
+$('#media_upload').on('change', function(e){
+    console.log(e);
+    //data_type = e.type;
+    var files = e.target.files;
+    console.log(files[0]);
+    var name = files[0].name;
+    console.log(name);
+    console.log(validation.checkDetails());
+
+    if(!validateUploadedMediaFormat(data_type, files)){
+        console.log('wrong file type');
+        return;
+    }
+
+    $('.body-overlay').fadeIn();
+    $('.video-modal').fadeIn();
+
+    var img_obj = new FormData();
+    img_obj.append('files', files[0]);
+    img_obj.append('type', data_type);
+    var url = 'http://creathives.com/index/home/media_upload/'+new_proj_id+'/';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: img_obj,
+        processData: false,
+        contentType: false,
+        'success': function (res) {
+            data = JSON.parse(res);
+            //console.log(data.image_url);
+            $('.mediaplayer iframe').attr('src', data.image_url);
+            $('.video-thumbnails li img').attr('src', data.image_url);
+            $('.video-viewer img').attr('src', data.image_url);
+            $('.video-desc h5').first().text(name);
+            $('.video-desc h4').first().text(data_type+' Details');
+        }
+    }).error(function (r) {
+        console.log(r)
+
+    });
+    //$('.icn').show();
+});
+
 
 
 /*---------------------------------------------------------------------------------------------*/
+
+/*----------------get project media and details-------------------------*/
+
+$('.project-sq').on('click', function (e) {
+    id = $(this).find('a').attr('data-project-id');
+    var url = 'http://creathives.com/index/home/get_project_details/'+id+'/';
+    $.ajax({
+            url: url,
+            method: 'GET',
+            'success': function (res) {
+                //console.log(res);
+                //$('#rightView_content>.pH_row').removeClass('hide');
+                $('.pH_row-edit .media-left img').attr('src', res.url_thumb_img);
+                $('.media-body h4').text(res.title);
+                $('.media-body span').text(res.type);
+                $('.media-body p').text(res.description);
+                new_proj_id = id;
+                //getMedia()
+                //    /*Right Panel*/
+
+
+            }
+        }).error(function (r) {
+            console.log(r);
+        });
+        e.stopPropagation();
+});
+
+function getMedia(){
+    $.each()
+
+}
+
+/*----------------------------------------------------------------------*/

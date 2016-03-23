@@ -6,10 +6,13 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
 from app.accounts.models import Account
-from app.home.models import Projects, ProfileDetails
+from app.home.models import Projects, ProfileDetails, Media
+from app.home.serializer import ProjectSerializer
 from main.settings.development import PROJECT_ROOT
 
 
@@ -250,4 +253,52 @@ def delete_project(request):
         return HttpResponse(json.dumps(context))
 
 
-# def get_project_media(request):
+@api_view(['GET', 'POST'])
+def get_project_details(request, id):
+    context = {}
+    if request.method == 'GET':
+        user_id = str(request.user.id)
+        print 'user', user_id
+        user = get_object_or_404(Account, pk=user_id)
+        try:
+            print "try"
+            details = Projects.objects.get(id=id)
+            # print details
+            serial_data = ProjectSerializer(details)
+            # print serial_data.data
+            return Response(serial_data.data, status=status.HTTP_200_OK)
+        except Projects.DoesNotExist:
+            context['status'] = 'Project not Exist'
+            return HttpResponse(context)
+    else:
+        context['status'] = 'failed'
+        return HttpResponse(json.dumps(context))
+
+
+@api_view(['POST'])
+def media_upload(request, id):
+    print 'media uploading'
+    if request.method == 'POST':
+        context = {}
+        user_id = str(request.user.id)
+        data = request.FILES.get('files')
+        type = request.POST.get('type')
+        file_static_dir = "/static/user-temp-data/"+user_id+'/media/'+type+'/'
+        user = get_object_or_404(Account, pk=user_id)
+        img_static_url = upload_save_get_url(data, file_static_dir)
+        project = Projects.objects.get(id=id)
+        print project
+        try:
+            media = project.media_set.get(id=id)
+            # media.save()
+            # context['id']=id
+        except Media.DoesNotExist:
+            media = project.media_set.create(created=timezone.now(),
+                                         url=img_static_url,
+                                         thumb_img=img_static_url, type=type)
+        # print user
+        # print new_project.url_thumb_img
+        # print new_project.id
+        context['image_url'] = img_static_url
+        # print context
+        return HttpResponse(json.dumps(context))

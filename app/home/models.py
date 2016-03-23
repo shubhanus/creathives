@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.db import models
+from django.utils import timezone
+
 from app.accounts.models import Account
 
 
@@ -7,23 +9,13 @@ class Projects(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     title = models.CharField(max_length=60, default='No Project Title assigned')
 
-    def __str__(self):
-        return self.title
     description = models.TextField(max_length=300, default='No description', null=True)
-    # IMAGE = '1'
-    # MUSIC = '2'
-    # VIDEO = '3'
-    # ARTICLE = '4'
-    # PRO_TYPE_CHOICE = (
-    #     (IMAGE, 'Image'),
-    #     (MUSIC, 'Music'),
-    #     (VIDEO, 'Video'),
-    #     (ARTICLE, 'Article'),
-    # )
     type = models.CharField(max_length=20, null=True)
-    # main_url = models.TextField(max_length=200)
-    date_created = models.DateTimeField('Project Date Update')
+    date_created = models.DateTimeField(default=timezone.now, blank=True)
     url_thumb_img = models.TextField(max_length=200, default='/static/user-temp-data/default.png')
+
+    def __unicode__(self):
+        return self.title
 
     class Meta:
         db_table = "projects"
@@ -59,6 +51,7 @@ class Media(models.Model):
     type = models.CharField(max_length=2, choices=MEDIA_TYPE_CHOICE, null=True)
     url = models.CharField(max_length=60, null=True)
     thumb_img = models.CharField(max_length=60, default='/static/images/thumb.png')
+    created = models.DateTimeField(default=timezone.now, blank=True)
 
     class Meta:
         db_table = 'Media'

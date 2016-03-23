@@ -82,15 +82,17 @@ $(document).ready(function(){
 
 	// Media tabs upload
 
-	$(".icn").click(function() {
-		event.preventDefault();
-		$('.icn').hide();
-		$(this).show();
+	$(".icn").click(function(event) {
+		//event.preventDefault();
+		//$('.icn').hide();
+		//$(this).show();
 	});
 
 	// Delete prompt
-	$('.deleteTrash').on('click', function(){
+	$('.deleteTrash').on('click', function(e){
+		e.preventDefault();
 		$(this).closest('li').find('.deletePrompt').removeClass('hide');
+		e.stopPropagation();
 	});
 
 

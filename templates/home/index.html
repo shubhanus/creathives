@@ -257,36 +257,33 @@
                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                 <div class="media-tabs">
                                     <ul>
-                                    <form action="" method="post" class="hide" id="media_upload">{% csrf_token %}
-                                        {{ form.as_p }}
+                                    <form method="post" class="hide" enctype="multipart/form-data" id="media_upload">{% csrf_token %}
+{#                                      {{ form.as_p }}#}
+                                        <input type="file" class="hide media_all_upload" multiple>
                                     </form>
-                                      <input type="file" data-type="videos" class="hide media_all_upload" multiple>
-                                      <input type="file" data-type="tracks" class="hide media_all_upload" multiple>
-                                      <input type="file" data-type="articles" class="hide media_all_upload" multiple>
-                                      <input type="file" data-type="Images" class="hide media_all_upload" multiple>
                                         <li class="icn">
                                             <a href="">
-                                                <img src="/static/images/Header/videos-black.png" alt="videos">
+                                                <img data-type="video" src="/static/images/Header/videos-black.png" alt="videos">
                                             </a>
                                         </li>
                                         <li class="icn">
                                             <a href="">
-                                                <img src="/static/images/Header/tracks-black.png" alt="Tracks">
+                                                <img data-type="track" src="/static/images/Header/tracks-black.png" alt="Tracks">
                                             </a>
                                         </li>
                                         <li class="icn">
                                             <a href="">
-                                                <img src="/static/images/Header/articles-black.png" alt="Articles">
+                                                <img data-type="article" src="/static/images/Header/articles-black.png" alt="Articles">
                                             </a>
                                         </li>
                                         <li class="icn">
                                             <a href="">
-                                                <img src="/static/images/Header/images-black.png" alt="Images">
+                                                <img data-type="image" src="/static/images/Header/images-black.png" alt="Images">
                                             </a>
                                         </li>
                                     </ul>
                                     <p>Click to upload media</p>
-                                    <span class="error_message">File type not supported. <a href="" class="info-popup" data-placement="bottom" data-toggle="popover" data-trigger="hover" data-content=""><img src="/static/common/images/edit/ques.png" alt="?"></a></span>
+                                    <span class="error_message hide">File type not supported. <a href="" class="info-popup" data-placement="bottom" data-toggle="popover" data-trigger="hover" data-content=""><img src="/static/common/images/edit/ques.png" alt="?"></a></span>
                                 </div>
                             </div>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
@@ -326,7 +323,7 @@
 {#                                <a href=""><img src="/static/images/Edit/img-pen.png" alt="Edit"></a>#}
 {#                            </div>#}
 {#                        </div>#}
-{#                    </div>#}
+                    </div>
 {#                    {% endfor %}#}
 {#                {% endif %}#}
 
@@ -376,77 +373,77 @@
                                             <img src="/static/images/latest/project1.png" alt="">
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                </ul>
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                </ul>#}
                             </div>
                         </div>
                         <div class="video-modal-right">
                             <div class="video-viewer small">
                                 <img src="/static/images/banner2.png" alt="video">
-                                <span class="video-duration">10:51:09</span>
+                                <span class="video-duration hide">10:51:09</span>
                             </div>
-                            <div class="video-thumbnails small">
-                                <ul>
-                                    <li>
-                                        <a href="" class="active">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="">
-                                            <img src="/static/images/latest/project1.png" alt="">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+{#                            <div class="video-thumbnails small">#}
+{#                                <ul>#}
+{#                                    <li>#}
+{#                                        <a href="" class="active">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <a href="">#}
+{#                                            <img src="/static/images/latest/project1.png" alt="">#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                </ul>#}
+{#                            </div>#}
                             <div class="video-desc">
                                 <h4>Video Details</h4>
                                 <h5>Video title pulled from youtube</h5>
-                                <a href="">https://www.youtube.com/watch?v=brME5ZgKbUo</a>
+{#                                <a href="">https://www.youtube.com/watch?v=brME5ZgKbUo</a>#}
                                 <h5>Lorem ipsum diet your text goes here</h5>
                                 <hr>
                                 <p>Lorem ipsum diet your text goes here your text goes here your text goes here </p>

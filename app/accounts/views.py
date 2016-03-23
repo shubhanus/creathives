@@ -31,6 +31,7 @@ def login_user(request):
             auth_login(request, ac)
             # print "User logged in"
             serial = UserSerializer(ac)
+            # print serial
             return Response(serial.data, status=status.HTTP_200_OK)
         else:
             # print "Unauthorised"

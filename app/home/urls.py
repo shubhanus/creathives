@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^home/profile_pic_change/$', views.profile_pic_change),
     url(r'^home/update_name_about/$', views.update_name_about),
     url(r'^home/delete_project/$', views.delete_project),
-    # url(r'^home/get_project_media/$', views.get_project_media),
-
+    url(r'^home/get_project_details/(?P<id>[0-9]+)/$', views.get_project_details),
+    url(r'^home/media_upload/(?P<id>[0-9]+)/$', views.media_upload),
     # url(r'^home/proj_update/(?P<id>[0-9]+)/$', views.proj_update),
 ]
