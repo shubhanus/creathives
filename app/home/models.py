@@ -27,7 +27,7 @@ class ProfileDetails(models.Model):
     display_picture = models.CharField(max_length=200, null=True, default='/static/images/user.png')
     display_picture_top_small = models.CharField(max_length=200, null=True, default='/static/images/user-small.png')
 
-    def __str__(self):
+    def __unicode__(self):
         return self.display_picture
     cover_picture = models.CharField(max_length=200, null=True, default='/static/images/banner1.png')
 
@@ -38,6 +38,9 @@ class ProfileDetails(models.Model):
 class Media(models.Model):
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
     name = models.CharField(max_length=40, default='untitled')
+
+    def __unicode__(self):
+        return self.url
     IMAGE = '1'
     MUSIC = '2'
     VIDEO = '3'
@@ -49,12 +52,16 @@ class Media(models.Model):
         (ARTICLE, 'Article'),
     )
     type = models.CharField(max_length=2, choices=MEDIA_TYPE_CHOICE, null=True)
+    description = models.CharField(max_length=160, default='No description')
     url = models.CharField(max_length=60, null=True)
     thumb_img = models.CharField(max_length=60, default='/static/images/thumb.png')
     created = models.DateTimeField(default=timezone.now, blank=True)
 
     class Meta:
         db_table = 'Media'
+
+    def get_media_type(self, obj):
+        return obj.get_media_type_choice_display()
 
 admin.site.register(Projects)
 admin.site.register(ProfileDetails)

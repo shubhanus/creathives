@@ -12,7 +12,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from app.accounts.models import Account
 from app.home.models import Projects, ProfileDetails, Media
-from app.home.serializer import ProjectSerializer
+from app.home.serializer import ProjectSerializer, MediaSerializer
 from main.settings.development import PROJECT_ROOT
 
 
@@ -262,13 +262,36 @@ def get_project_details(request, id):
         user = get_object_or_404(Account, pk=user_id)
         try:
             print "try"
-            details = Projects.objects.get(id=id)
+            proj_details = user.projects_set.get(id=id)
             # print details
-            serial_data = ProjectSerializer(details)
-            # print serial_data.data
-            return Response(serial_data.data, status=status.HTTP_200_OK)
+            serial_details = ProjectSerializer(proj_details)
+            # print serial_media
+            return Response(serial_details.data, status=status.HTTP_200_OK)
         except Projects.DoesNotExist:
             context['status'] = 'Project not Exist'
+            return HttpResponse(context)
+    else:
+        context['status'] = 'failed'
+        return HttpResponse(json.dumps(context))
+
+
+@api_view(['GET', 'POST'])
+def get_project_media(request, id):
+    context = {}
+    if request.method == 'GET':
+        user_id = str(request.user.id)
+        # print 'user', user_id
+        user = get_object_or_404(Account, pk=user_id)
+        try:
+            # print "try"
+            proj_details = user.projects_set.get(id=id)
+            proj_media = Media.objects.filter(project_id=proj_details).order_by('-created')[:5]
+            # print proj_media
+            serial_media = MediaSerializer(proj_media, many=True)
+            # print serial_media.data
+            return Response(serial_media.data, status=status.HTTP_200_OK)
+        except Media.DoesNotExist:
+            context['status'] = 'Media not Exist'
             return HttpResponse(context)
     else:
         context['status'] = 'failed'
@@ -282,20 +305,31 @@ def media_upload(request, id):
         context = {}
         user_id = str(request.user.id)
         data = request.FILES.get('files')
-        type = request.POST.get('type')
-        file_static_dir = "/static/user-temp-data/"+user_id+'/media/'+type+'/'
+        # print data
+        media_type = request.POST.get('type')
+        # print media_type
+        file_static_dir = "/static/user-temp-data/"+user_id+'/media/'+media_type+'/'
         user = get_object_or_404(Account, pk=user_id)
         img_static_url = upload_save_get_url(data, file_static_dir)
         project = Projects.objects.get(id=id)
-        print project
+        # print project
+        if media_type == 'image':
+            media_type = 1
+        elif media_type == 'track':
+            media_type = 2
+        elif media_type == 'video':
+            media_type = 3
+        elif media_type == 'article':
+            media_type = 4
         try:
             media = project.media_set.get(id=id)
             # media.save()
             # context['id']=id
         except Media.DoesNotExist:
             media = project.media_set.create(created=timezone.now(),
-                                         url=img_static_url,
-                                         thumb_img=img_static_url, type=type)
+                                             url=img_static_url,
+                                             thumb_img=img_static_url,
+                                             type=media_type)
         # print user
         # print new_project.url_thumb_img
         # print new_project.id

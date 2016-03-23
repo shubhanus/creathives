@@ -558,14 +558,14 @@ $('.yes').on('click', function(e){
                 validation = true;
             }
 
-            if(validation){
-                $('.media-tabs .error_message').hide();
-
-            }else{
-                var val = 'Approved Formats: '+approved_formats[type].join(', ');
-                $('.media-tabs .error_message').show();
-                $('.media-tabs .error_message .info-popup').attr('data-content',val)
-            }
+            //if(validation){
+            //    $('.media-tabs .error_message').hide();
+            //
+            //}else{
+            //    var val = 'Approved Formats: '+approved_formats[type].join(', ');
+            //    $('.media-tabs .error_message').show();
+            //    $('.media-tabs .error_message .info-popup').attr('data-content',val)
+            //}
             return validation
         }
     }
@@ -597,7 +597,7 @@ $('#media_upload').on('change', function(e){
     console.log(validation.checkDetails());
 
     if(!validateUploadedMediaFormat(data_type, files)){
-        console.log('wrong file type');
+        alert('Wrong ' + data_type + ' type please choose a ' + data_type + ' file.');
         return;
     }
 
@@ -650,10 +650,7 @@ $('.project-sq').on('click', function (e) {
                 $('.media-body span').text(res.type);
                 $('.media-body p').text(res.description);
                 new_proj_id = id;
-                //getMedia()
-                //    /*Right Panel*/
-
-
+                getMedia(id);
             }
         }).error(function (r) {
             console.log(r);
@@ -661,9 +658,32 @@ $('.project-sq').on('click', function (e) {
         e.stopPropagation();
 });
 
-function getMedia(){
-    $.each()
-
+function getMedia(id){
+    var url = 'http://creathives.com/index/home/get_project_media/'+id+'/';
+    $.ajax({
+            url: url,
+            method: 'GET',
+            'success': function (res) {
+                console.log(res);
+                //$('#rightView_content>.pH_row').removeClass('hide');
+                //new_proj_id = id;
+                    /*Right Panel*/
+                //medias = res;
+                //if(res.type == 1)
+                //    data_type = 'image';
+                //if(res.type == 2)
+                //    data_type = 'music';
+                //if(res.type == 3)
+                //    data_type = 'video';
+                //if(res.type == 4)
+                //    data_type = 'tracks';
+                //var m_list = $('.project_lists[data-media-type="'+data_type+'"]');
+                //var template = _.template($('#tmpl_media_box').html());
+                //m_list.append(template({'medias':medias, 'two':'2'}));
+            }
+        }).error(function (r) {
+            console.log(r);
+        });
 }
 
 /*----------------------------------------------------------------------*/
