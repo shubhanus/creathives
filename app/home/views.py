@@ -52,9 +52,6 @@ def new_proj_create(request, id):
         context = {}
         user_id = str(request.user.id)
         data = request.FILES['image']
-        # print data
-        print id
-        # print request.
         file_static_dir = "/static/user-temp-data/"+user_id+'/'
         user = get_object_or_404(Account, pk=user_id)
         img_static_url = upload_save_get_url(data, file_static_dir)
@@ -66,12 +63,9 @@ def new_proj_create(request, id):
         except Projects.DoesNotExist:
             new_project = user.projects_set.create(date_created=timezone.now(), url_thumb_img=img_static_url)
             new_project_id = new_project.id
+            print new_project_id
             context['id'] = new_project_id
-        # print user
-        # print new_project.url_thumb_img
-        # print new_project.id
         context['image_url'] = img_static_url
-        # print context
         return HttpResponse(json.dumps(context))
 
 
@@ -276,7 +270,7 @@ def get_project_details(request, id):
 
 
 @api_view(['GET', 'POST'])
-def get_project_media(request, id):
+def get_project_media(request, id, st=0, end=5):
     context = {}
     if request.method == 'GET':
         user_id = str(request.user.id)
@@ -285,11 +279,13 @@ def get_project_media(request, id):
         try:
             print "try"
             proj_details = user.projects_set.get(id=id)
-            proj_media = proj_details.media_set.all().order_by('created')[:5]
+            media_count = proj_details.media_set.count()
+            proj_media = Media.objects.filter(project_id=proj_details).order_by('-created')[st:end]
             print proj_media
             serial_media = MediaSerializer(proj_media, many=True)
             # print serial_media.data
-            return Response(serial_media.data, status=status.HTTP_200_OK)
+            data = json.dumps({'count': media_count, 'data': serial_media.data})
+            return Response(data, status=status.HTTP_200_OK)
         except Media.DoesNotExist:
             context['status'] = 'Media not Exist'
             return HttpResponse(context)

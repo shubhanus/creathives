@@ -24,6 +24,7 @@ $(function () {
         $('.header-midMenu .active').removeClass('active');
         var className = $(this).attr('class');
         $('.' + className).addClass('active');
+        console.log(className)
         if(className == 'proj-all')
             $('.project_lists .pl_thumbHolder').removeClass('hide');
         else {

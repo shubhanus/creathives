@@ -53,27 +53,6 @@ $(document).ready(function(){
 		// Nice scroll
 		$(".left-panel-scroll").niceScroll();
 
-
-		function sticky_relocate() {
-			var window_top = $(window).scrollTop();
-			var div_top = $('#sticky-anchor').offset().top;
-			var targetOffset = $("#anchor-point").offset().top;
-
-			if (window_top > div_top) {
-				$('.leftPanel').addClass('stick');
-				$('.header-midMenu').removeClass('hide');
-				$('.nav-categories').addClass('hide');
-			} else {
-				$('.leftPanel').removeClass('stick');
-				$('.header-midMenu').addClass('hide');
-				$('.nav-categories').removeClass('hide');
-			}
-		}
-
-		$(function () {
-			$(window).scroll(sticky_relocate);
-			sticky_relocate();
-		});
 	}  
 
 	$( ".close-progress" ).click(function() {
