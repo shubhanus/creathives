@@ -95,18 +95,6 @@ $(document).ready(function(){
 		e.stopPropagation();
 	});
 
-
-	// Video modal open
-	$('.pl_thumbHolder .thumbnail').click(function(){
-		$('body').css('overflow', 'hidden');
-		$('.video-modal').fadeIn();
-		$('.body-overlay').fadeIn();
-	});
-	$('.btn-done').click(function(){
-		$('body').css('overflow', 'visible');
-		$('.video-modal').fadeOut();
-		$('.body-overlay').fadeOut();
-	});
 });
 
 

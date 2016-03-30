@@ -261,11 +261,11 @@ def get_project_details(request, id):
         print 'user', user_id
         user = get_object_or_404(Account, pk=user_id)
         try:
-            print "try"
+            # print "try"
             proj_details = user.projects_set.get(id=id)
-            # print details
+            # print proj_details
             serial_details = ProjectSerializer(proj_details)
-            # print serial_media
+            # print serial_details.data
             return Response(serial_details.data, status=status.HTTP_200_OK)
         except Projects.DoesNotExist:
             context['status'] = 'Project not Exist'
@@ -283,10 +283,10 @@ def get_project_media(request, id):
         # print 'user', user_id
         user = get_object_or_404(Account, pk=user_id)
         try:
-            # print "try"
+            print "try"
             proj_details = user.projects_set.get(id=id)
-            proj_media = Media.objects.filter(project_id=proj_details).order_by('-created')[:5]
-            # print proj_media
+            proj_media = proj_details.media_set.all().order_by('created')[:5]
+            print proj_media
             serial_media = MediaSerializer(proj_media, many=True)
             # print serial_media.data
             return Response(serial_media.data, status=status.HTTP_200_OK)
@@ -298,41 +298,50 @@ def get_project_media(request, id):
         return HttpResponse(json.dumps(context))
 
 
-@api_view(['POST'])
+@api_view(['PUT','POST'])
 def media_upload(request, id):
     print 'media uploading'
     if request.method == 'POST':
-        context = {}
         user_id = str(request.user.id)
         data = request.FILES.get('files')
-        # print data
         media_type = request.POST.get('type')
-        # print media_type
         file_static_dir = "/static/user-temp-data/"+user_id+'/media/'+media_type+'/'
         user = get_object_or_404(Account, pk=user_id)
         img_static_url = upload_save_get_url(data, file_static_dir)
-        project = Projects.objects.get(id=id)
-        # print project
-        if media_type == 'image':
+        project = user.projects_set.get(id=id)
+        if media_type == 'Images':
             media_type = 1
-        elif media_type == 'track':
+        elif media_type == 'Tracks':
             media_type = 2
-        elif media_type == 'video':
+        elif media_type == 'Videos':
             media_type = 3
-        elif media_type == 'article':
+        elif media_type == 'Articles':
             media_type = 4
+        new_media = project.media_set.create(created=timezone.now(),
+                                         url=img_static_url,
+                                         thumb_img=img_static_url,
+                                         type=media_type)
+        # print new_media.id
+        db_media = Media.objects.get(pk=new_media.id)
+        # print db_media
+        serial_media = MediaSerializer(db_media)
+        # print serial_media.data
+        return Response(serial_media.data, status=status.HTTP_200_OK)
+    # last
+    if request.method == 'PUT':
+        print 'put req'
+        data = JSONParser().parse(request)
+        title = data.get('title', None)
+        description = data.get('description', None)
         try:
-            media = project.media_set.get(id=id)
-            # media.save()
-            # context['id']=id
+            media = Media.objects.get(pk=id)
+            if title is not None:
+                media.name = title
+            if description is not None:
+                media.description = description
+            media.save()
+            serial_media = MediaSerializer(media)
+            return Response({'id': id, 'title': title, 'description':description})
         except Media.DoesNotExist:
-            media = project.media_set.create(created=timezone.now(),
-                                             url=img_static_url,
-                                             thumb_img=img_static_url,
-                                             type=media_type)
-        # print user
-        # print new_project.url_thumb_img
-        # print new_project.id
-        context['image_url'] = img_static_url
-        # print context
-        return HttpResponse(json.dumps(context))
+            pass
+            return Response({'error': 'media not available'})

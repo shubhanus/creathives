@@ -6,15 +6,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Projects
-        fields = ('title', 'type', 'description', 'url_thumb_img', 'date_created')
+        fields = ('id', 'title', 'type', 'description', 'url_thumb_img', 'date_created')
 
 
 class MediaSerializer(serializers.ModelSerializer):
-    type = serializers.SerializerMethodField('get_media_type_serializer')
+    type = serializers.SerializerMethodField()
 
     class Meta:
         model = Media
-        fields = ('name', 'type', 'url', 'description', 'thumb_img', 'created')
+        fields = ('id', 'name', 'type', 'url', 'description', 'thumb_img', 'created')
 
-    def get_media_type_serializer(self, Media):
-        return Media.get_media_type()
+    def get_type(self, obj):
+        return obj.get_type_display()

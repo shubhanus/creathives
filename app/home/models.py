@@ -46,22 +46,22 @@ class Media(models.Model):
     VIDEO = '3'
     ARTICLE = '4'
     MEDIA_TYPE_CHOICE = (
-        (IMAGE, 'Image'),
-        (MUSIC, 'Music'),
-        (VIDEO, 'Video'),
-        (ARTICLE, 'Article'),
+        (IMAGE, 'images'),
+        (MUSIC, 'tracks'),
+        (VIDEO, 'videos'),
+        (ARTICLE, 'articles'),
     )
     type = models.CharField(max_length=2, choices=MEDIA_TYPE_CHOICE, null=True)
     description = models.CharField(max_length=160, default='No description')
-    url = models.CharField(max_length=60, null=True)
-    thumb_img = models.CharField(max_length=60, default='/static/images/thumb.png')
+    url = models.CharField(max_length=120, null=True)
+    thumb_img = models.CharField(max_length=120, default='/static/images/thumb.png')
     created = models.DateTimeField(default=timezone.now, blank=True)
 
     class Meta:
         db_table = 'Media'
 
-    def get_media_type(self, obj):
-        return obj.get_media_type_choice_display()
+    # def get_media_type(self, obj):
+    #     return obj.get_media_type_choice_display()
 
 admin.site.register(Projects)
 admin.site.register(ProfileDetails)

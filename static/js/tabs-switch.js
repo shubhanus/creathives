@@ -18,11 +18,26 @@ $(function () {
         $('#dv-reg').css('display', 'block');
     });
 /*for project list tabs*/
-    $('.nav-categories li').click(function(e){
+    $('.nav-categories li, .header-midMenu a').on('click', function(e){
         e.preventDefault();
-        $('.nav-categories>li.active').removeClass('active');
-        $(this).addClass('active');
-        //var proj_data = $(this).attr('id');
+        $('.nav-categories .active').removeClass('active');
+        $('.header-midMenu .active').removeClass('active');
+        var className = $(this).attr('class');
+        $('.' + className).addClass('active');
+        if(className == 'proj-all')
+            $('.project_lists .pl_thumbHolder').removeClass('hide');
+        else {
+                $('.project_lists .pl_thumbHolder').addClass('hide');
+                if (className == 'proj-videos')
+                    $('.project_lists .pl_thumbHolder').filter("[data-type='videos']").removeClass('hide');
+                if (className == 'proj-images')
+                    $('.project_lists .pl_thumbHolder').filter("[data-type='images']").removeClass('hide');
+                if (className == 'proj-tracks')
+                    $('.project_lists .pl_thumbHolder').filter("[data-type='tracks']").removeClass('hide');
+                if (className == 'proj-articles')
+                    $('.project_lists .pl_thumbHolder').filter("[data-type='articles']").removeClass('hide');
+            }
+        // var proj_data = $(this).attr('id');
     });
 });
 

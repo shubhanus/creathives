@@ -1708,3 +1708,13 @@ body{
 				height: 422px;
 			}
 		}
+
+.edit-any{
+    border-bottom: 1px #eee;
+    /*margin-top: 20px;*/
+}
+
+[contenteditable=true]:empty:before {
+	content: attr(placeholder);
+	color: #cbcbcb;
+}
