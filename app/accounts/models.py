@@ -3,10 +3,10 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-import logging
-
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger(__name__)
+# import logging
+#
+# logging.basicConfig(level=logging.INFO)
+# log = logging.getLogger(__name__)
 
 
 class AccountManager(BaseUserManager):

@@ -28,7 +28,7 @@ $(document).ready(function(){
 
 
 
-		$('.leftPanel ul li').click(function(event){
+		$('.leftPanel ul li').on('click', function(event){
 			event.preventDefault();
 			$('#leftView').addClass('mob-none');
 			$('#rightView').removeClass('mob-none');

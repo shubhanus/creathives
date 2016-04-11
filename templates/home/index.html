@@ -192,31 +192,31 @@
             <div class="right_viewArea">
                 <div id="anchor-point"></div>
                 <ul class="nav-categories">
-                    <li class="proj-all active">
+                    <li class="proj-all active" data-type="all">
                         <a href="">
                             <img src="/static/images/Header/all-black.png" alt="all">
                             <span>All</span>
                         </a>
                     </li>
-                    <li class="proj-videos">
+                    <li class="proj-videos" data-type="videos">
                         <a href="">
                             <img src="/static/images/Header/videos-black.png" alt="videos">
                             <span>Videos</span>
                         </a>
                     </li>
-                    <li class="proj-tracks">
+                    <li class="proj-tracks" data-type="tracks">
                         <a href="">
                             <img src="/static/images/Header/tracks-black.png" alt="tracks">
                             <span>Tracks</span>
                         </a>
                     </li>
-                    <li class="proj-images">
+                    <li class="proj-images" data-type="images">
                         <a href="">
                             <img src="/static/images/Header/images-black.png" alt="images">
                             <span>Images</span>
                         </a>
                     </li>
-                    <li class="proj-articles">
+                    <li class="proj-articles" data-type="articles">
                         <a href="">
                             <img src="/static/images/Header/articles-black.png" alt="articles">
                             <span>Articles</span>
@@ -267,25 +267,25 @@
                                             {#                                      {{ form.as_p }}#}
                                             <input type="file" class="hide media_all_upload" multiple>
                                         </form>
-                                        <li class="icn">
+                                        <li class="icn" data-type="videos">
                                             <a href="">
                                                 <img data-type="Videos" src="/static/images/Header/videos-black.png"
                                                      alt="Videos">
                                             </a>
                                         </li>
-                                        <li class="icn">
+                                        <li class="icn" data-type="tracks">
                                             <a href="">
                                                 <img data-type="Tracks" src="/static/images/Header/tracks-black.png"
                                                      alt="Tracks">
                                             </a>
                                         </li>
-                                        <li class="icn">
+                                        <li class="icn" data-type="articles">
                                             <a href="">
                                                 <img data-type="Articles" src="/static/images/Header/articles-black.png"
                                                      alt="Articles">
                                             </a>
                                         </li>
-                                        <li class="icn">
+                                        <li class="icn" data-type="images">
                                             <a href="">
                                                 <img data-type="Images" src="/static/images/Header/images-black.png"
                                                      alt="Images">
@@ -301,7 +301,7 @@
                                         <div class="form-group">
                                             <label for="mediaURL">ADD URL</label>
                                             <input type="text" style="width: 60%;" class="form-control" id="mediaURL" placeholder="http://">
-{#                                            <button class="btn btn-black hide" id="yt-add">LOAD</button>#}
+                                            <button class="btn btn-black hide" id="yt-add">LOAD</button>
                                         </div>
                                     </form>
                                 </div>
@@ -357,12 +357,12 @@
                                   <source src='/static/images/mango.mp4' type="video/mp4"><source src='/static/images/mango.webm' type="video/webm"><source src='/static/images/mango.ogg' type="video/ogg">
                                     <p>Please use a modern browser to view this video.</p>
                                   </video> -->
-                                <iframe width="100%" height="100%" scrolling="no" title="YouTube video player"
-                                        src=""
+{#                                <img class='images' src="/static/images/loading.gif">#}
+                                <iframe class="videos tracks articles hide" width="100%" height="100%" scrolling="no" title="YouTube video player"
+                                        src="/static/images/loading.gif"
                                         frameborder="0" allowfullscreen="">
-
                                 </iframe>
-
+                                <img class='images hide' src="/static/images/loading.gif">
                             </div>
                             <div class="loader-display hide">
                                 <div class="upload-progress-bar">
@@ -380,7 +380,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="video-thumbnails large">
                         <ul>
@@ -394,7 +393,7 @@
                                     </div>
                                 </div>
                                 <a href="" class="active">
-                                    <img src="/static/images/latest/project1.png" alt="">
+                                    <img src="/static/images/ajax-loader.gif" alt="">
                                 </a>
                             </li>
                             {#                                    <li>#}
@@ -426,8 +425,8 @@
                     </div>
                 </div>
                 <div class="video-modal-right">
-                    <div class="video-viewer small">
-                        <img src="/static/images/banner2.png" alt="video">
+                    <div class="video-viewer small hide">
+                        <img src="/static/images/ajax-loader.gif" alt="video">
                         <span class="video-duration hide">10:51:09</span>
                     </div>
                     {#                            <div class="video-thumbnails small">#}
@@ -474,7 +473,7 @@
                     </div>
                 </div>
                 <div class="gallery-footer">
-                    <button class="btn btn-share">SHARE</button>
+                    <button class="btn btn-share hide">SHARE</button>
                     <button class="btn btn-black btn-done">DONE</button>
                 </div>
             </div>
@@ -603,10 +602,12 @@
 {#</script>#}
 
 
-<script src="/static/js/script.js" type="text/javascript"></script>
-<script src="/static/js/profile_projects_edit.js" type="text/javascript"></script>
 <script src='/static/js/lightbox.js' type="text/javascript"></script>
 <script src="/static/js/jquery.sticky.js" type="text/javascript"></script>
+<script src="/static/js/script.js" type="text/javascript"></script>
+<script src="/static/js/profile_projects_edit.js" type="text/javascript"></script>
+<script src="/static/js/tabs-switch.js" type="text/javascript"></script>
+
 
 <script>
     var myVideo = document.getElementById("videoPP");

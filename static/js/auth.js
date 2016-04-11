@@ -19,7 +19,7 @@ $('#login-btn').on('click', function(e){
         'data' : JSON.stringify(data),
         'dataType': "json",
         'success': function(response) {
-            //localStorage.setItem('token', response);
+            localStorage.setItem('token', response);
             //var win = '//' + window.location.hostname + '/index/home/';
             //window.location = win;
             window.location = '/index/home/';
