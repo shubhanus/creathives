@@ -1,5 +1,6 @@
 import errno
 import json
+import shutil
 import subprocess
 
 import os
@@ -31,8 +32,10 @@ def index(request):
     # print "index page opened"
     context = {}
     if request.user.is_authenticated():
-        profile = ProfileDetails.objects.get(pk=request.user.id)
-        projects = Projects.objects.filter(user_id=request.user.id).order_by('-date_created')
+        user_id = request.user.id
+        profile = ProfileDetails.objects.get(user_id=user_id)
+        projects = Projects.objects.filter(user_id=user_id).order_by('-date_created')
+        print projects
         context['request'] = request
         context['profile'] = profile
         context['projects'] = projects
@@ -54,16 +57,25 @@ def new_proj_create(request, id):
         context = {}
         user_id = str(request.user.id)
         data = request.FILES['image']
-        file_static_dir = "/static/user-temp-data/"+user_id+'/'
+        file_static_dir = '/static/user-temp-data/{0}/projects/project_{1}'\
+                .format(user_id, id)
         user = get_object_or_404(Account, pk=user_id)
         try:
             proj = Projects.objects.get(id=id)
-            context['id']=id
+            context['id'] = id
         except Projects.DoesNotExist:
             proj = user.projects_set.create(date_created=timezone.now())
             context['id'] = proj.id
+            file_static_dir = '/static/user-temp-data/{0}/projects/project_{1}'\
+                .format(user_id, proj.id)
+            os.mkdir(PROJECT_ROOT + file_static_dir)
+            os.mkdir(PROJECT_ROOT + file_static_dir + '/media')
+            os.mkdir(PROJECT_ROOT + file_static_dir + '/media/Articles')
+            os.mkdir(PROJECT_ROOT + file_static_dir + '/media/Images')
+            os.mkdir(PROJECT_ROOT + file_static_dir + '/media/Tracks')
+            os.mkdir(PROJECT_ROOT + file_static_dir + '/media/Videos')
         name, ext = os.path.splitext(data.name)
-        new_name = '{0}user_{1}_project_{2}{3}'.format(file_static_dir, str(request.user.id), proj.id, ext)
+        new_name = '{0}/user_{1}_project_{2}{3}'.format(file_static_dir, str(request.user.id), proj.id, ext)
         img_static_url = upload_save_get_url(data, new_name)
         proj.url_thumb_img = img_static_url
         proj.save()
@@ -127,38 +139,24 @@ def update_name_about(request):
     """
     context = {}
     if request.method == 'POST':
-        # print 'update_name_about'
         data = JSONParser().parse(request)
-        # print "parsing complete"
-        # print data['about'], data['name']
         user = str(request.user.id)
-
         name = data.get('name', None)
         about = data.get('about', None)
         contact = data.get('contact', None)
-        # print 'split'
-        try:
-            # print "try"
-            update_about = ProfileDetails.objects.get(user_id=user)
-            update_name = Account.objects.get(pk=user)
-            # print "about name"
-            if name is not None:
-                name = name.split()
-                update_name.first_name = name[0]
-                update_name.last_name = name[1]
-                update_name.save()
-            if contact is not None:
-                # print 'in contact'
-                update_name.contact_number = contact
-                update_name.save()
-                # print 'contact saved'
-            if about is not None:
-                update_about.about = about
-                update_about.save()
-            # print 'update'
-        except Exception:
-            # print Exception
-            pass
+        update_about = ProfileDetails.objects.get(user_id=user)
+        update_name = Account.objects.get(pk=user)
+        if name is not None:
+            name = name.split()
+            update_name.first_name = name[0]
+            update_name.last_name = name[1]
+            update_name.save()
+        if contact is not None:
+            update_name.contact_number = contact
+            update_name.save()
+        if about is not None:
+            update_about.about = about
+            update_about.save()
         context['status'] = 'success'
         return HttpResponse(json.dumps(context))
     else:
@@ -177,12 +175,10 @@ def update_project_title(request, id):
     """
     context = {}
     if request.method == 'POST':
-        # print 'update_project_title'
         data = JSONParser().parse(request)
         proj_id = id
         user_id = str(request.user.id)
         user = get_object_or_404(Account, pk=user_id)
-        # print "parsing complete"
         title = data.get('title', None)
         type = data.get('type', None)
         desc = data.get('desc', None)
@@ -203,6 +199,14 @@ def update_project_title(request, id):
         except Projects.DoesNotExist:
             new_project = user.projects_set.create(date_created=timezone.now(), title=data['title'])
             context['id'] = new_project.id
+            file_static_dir = '{0}/static/user-temp-data/{1}/projects/project_{2}'\
+                .format(PROJECT_ROOT, user.id, new_project.id)
+            os.mkdir(file_static_dir)
+            os.mkdir(file_static_dir + '/media')
+            os.mkdir(file_static_dir + '/media/Articles')
+            os.mkdir(file_static_dir + '/media/Images')
+            os.mkdir(file_static_dir + '/media/Tracks')
+            os.mkdir(file_static_dir + '/media/Videos')
         context['status'] = 'success'
         return HttpResponse(json.dumps(context))
     else:
@@ -242,27 +246,21 @@ def profile_pic_change(request):
 def delete_project(request):
     context = {}
     if request.method == 'POST':
-        # print 'delete process start'
         data = JSONParser().parse(request)
-        # print 'parseing'
         user_id = str(request.user.id)
-        # print 'user',user_id
         user = get_object_or_404(Account, pk=user_id)
-        # print "parsing complete"
         id = data.get('id', None)
         try:
             # print "try"
             if id is not None:
                 delete = user.projects_set.get(id=id)
                 delete.delete()
+                shutil.rmtree(PROJECT_ROOT + '/static/user-temp-data/1/projects/project_{0}'.format(id))
                 context['status'] = 'success'
                 context['id'] = id
             # print 'update'
         except Projects.DoesNotExist:
             context['status'] = 'Project not Exist'
-        return HttpResponse(json.dumps(context))
-    else:
-        context['status'] = 'failed'
         return HttpResponse(json.dumps(context))
 
 
@@ -298,30 +296,25 @@ def get_project_media(request, id, mediaType, st=0, end=5):
         return Response(data, status=status.HTTP_200_OK)
 
 
-@api_view(['PUT','POST'])
+@api_view(['PUT', 'POST'])
 def media_upload(request, id):
     if request.method == 'POST':
         user_id = str(request.user.id)
         user = get_object_or_404(Account, pk=user_id)
-        print 'user id', user.id
         project = user.projects_set.get(id=id)
         new_media = project.media_set.create(created=timezone.now())
         data = request.FILES.get('files')
-        print data
         media_type = request.POST.get('type')
-        print media_type
-        file_static_dir = "/static/user-temp-data/"+user_id+'/media/'+media_type+'/'
-        print file_static_dir
+        # file_static_dir = "/static/user-temp-data/"+user_id+'/media/'+media_type+'/'
+        file_static_dir = "/static/user-temp-data/{0}/projects/project_{1}/media/{2}/"\
+            .format(user_id, project.id, media_type)
         name, ext = os.path.splitext(data.name)
         new_name = '{0}user_{1}_{2}_media_{3}{4}'.format(file_static_dir,
                                                          str(request.user.id),
                                                          media_type,
                                                          new_media.id,
                                                          ext)
-        print new_name
         img_static_url = upload_save_get_url(data, new_name)
-        print img_static_url
-        print media_type
         if media_type == 'Images':
             media_type = 1
         elif media_type == 'Tracks':
@@ -330,7 +323,6 @@ def media_upload(request, id):
             media_type = 3
         elif media_type == 'Articles':
             media_type = 4
-        print media_type
         thumb_img = get_thumbnail(img_static_url, media_type)
         new_media.url=img_static_url
         new_media.thumb_img=thumb_img
@@ -352,7 +344,69 @@ def media_upload(request, id):
                 media.description = description
             media.save()
             serial_media = MediaSerializer(media)
-            return Response({'id': id, 'title': title, 'description':description})
+            return Response({'id': id, 'title': title, 'description': description})
         except Media.DoesNotExist:
             pass
             return Response({'error': 'media not available'})
+
+
+@api_view(['POST'])
+def youtube_media_upload(request, id):
+    data = request.data
+    user_id = str(request.user.id)
+    user = get_object_or_404(Account, pk=str(request.user.id))
+    project = user.projects_set.get(id=id)
+    new_media = project.media_set.create(created=timezone.now())
+    thumb = '/static/user-temp-data/{0}/media/Videos/user_{1}_Videos_media_{2}_thumb.png'.format(user_id, user_id, new_media.id)
+    subprocess.call('ffmpeg -i {0} -filter scale=w={2}:h={3} {1} -y'
+                        .format(data['thumbnail'], PROJECT_ROOT+thumb, 260, 213), shell=True)
+    new_media.name = data['title']
+    new_media.type = '3'
+    new_media.description = data['description']
+    new_media.url = '//www.youtube.com/embed/' + data['media_url']
+    new_media.thumb_img = thumb
+    new_media.save()
+    # db_media = Media.objects.get(pk=54)
+    db_media = Media.objects.get(pk=new_media.id)
+    serial_media = MediaSerializer(db_media)
+    return Response(serial_media.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def delete_media(request):
+    context = {}
+    enc_list = [s.encode('ascii') for s in request.data.getlist('id[]')]
+    id = map(int, enc_list)
+    project_id = request.data.get("project_id")
+    user_id=str(request.user.id)
+    user = get_object_or_404(Account, pk=user_id)
+    project = user.projects_set.get(pk=project_id)
+    for d in id:
+        try:
+            media = project.media_set.get(id=d)
+            deleteFiles(PROJECT_ROOT+media.url)
+            deleteFiles(PROJECT_ROOT+media.thumb_img)
+            media.delete()
+            context['status'] = 'Success'
+        except Media.DoesNotExist:
+            context['status'] = 'Project not Exist'
+    #     try:
+    #     project.media_set.filter(id__in=id).delete()
+    #     # for d in id:
+    #     #     deleteFiles(PROJECT_ROOT+'/static/user-temp-data/{0}/media/Tracks/user_{0}_Tracks_media_{1}_thumb.png'
+    #     #             .format(user_id, d))
+    #     #     deleteFiles(PROJECT_ROOT+'/static/user-temp-data/{0}/media/Tracks/user_{0}_Tracks_media_{1}_thumb.png'
+    #     #             .format(user_id, d))
+    #     context['status'] = 'Success'
+    # except Media.DoesNotExist:
+    return HttpResponse(json.dumps(context))
+
+
+def deleteFiles(path):
+    try:
+        os.remove(path)
+    except OSError as exc:
+        if exc.errno != errno.EEXIST:
+            raise exc
+    return path
+

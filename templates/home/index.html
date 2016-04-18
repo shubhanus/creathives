@@ -15,13 +15,14 @@
         {% else %}
             /static/images/user.png
         {% endif %}
-        " alt="User Name">
+        " alt="{{ request.user.first_name }}">
             <form name="upload-progile-pic">
                 {% csrf_token %}
             </form>
             <input type="file" class="hide" name="prof_pic_update" id="prof-img">
             <!-- Portfolio Edit -->
             <a href=""> <img class="edit-prof hide" src="/static/images/Edit/camera2.png" alt="Change"></a>
+        <div id="profile-pic-error" class="error"></div>
         </div>
         <div class="col-lg-4 col-lg-offset-2 col-md-4 col-offset-md-2 col-sm-10 col-sm-offset-2 col-xs-12">
             <!-- Portfolio Edit -->
@@ -224,6 +225,7 @@
                     </li>
                 </ul>
                 <div id="rightView_content">
+                
                     <div class="pH_row hide">
                         <a href="" class="project-details-edit">
                             <img src="/static/images/Edit/img-pen.png" alt="Edit" style="float: right">
@@ -237,19 +239,19 @@
                                 your text goes here lorem ipsum diet your text goes here</p>
                         </div>
                     </div>
-
                     <!-- Portfolio Edit -->
                     <div class="pH_row-edit hide">
                         <div class="media">
                             <div class="media-left">
-                                <a href="#">
+                                <a>
                                     <form enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <input type="file" class="hide" name="proj-titleImg" id="proj-img">
                                     </form>
-                                </a>
-                            <img class="media-object" src="/static/images/Edit/titleImage.png"
+                                    <img class="media-object" src="/static/images/Edit/titleImage.png"
                                              alt="Upload Image">
+                                </a>
+                                    <div class="error" id='proj-img-error'></div>
                             </div>
 
                             <div class="media-body">
@@ -294,6 +296,7 @@
                                     </ul>
                                     <p>Click to upload media</p>
                                 </div>
+                                    <div class="error" id='media-upload-error'></div>
                             </div>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
                                 <div class="media-upload-URL">
@@ -311,8 +314,15 @@
                 </div>
 
                 <!-- project lists -->
-                <div class="project_lists">
-
+                <div class="thumb-progress-bar hide">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success" role="progressbar"
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                             style="width: 0%">
+                        </div>
+                    </div>
+                </div>
+                <div class="project_lists">     
                     <!-- Portfolio Edit add class="thumb-edit"-->
 {#                    <div class="pl_thumbHolder">#}
 {#                        <div class="thumb-edit-overlay"></div>#}
@@ -337,9 +347,12 @@
             </div>
 
             <!-- Portfolio Edit -->
-            <div class="countDisplay hide">
-                <span>3</span> images and <span>5</span> videos selected
-                <button class="btn btn-black">DELETE</button>
+            <div class="countDisplay hide" data-selection="">
+                <span class="images_count">0</span> Images,
+                <span class="videos_count">0</span> Videos,
+                <span class="tracks_count">0</span> Tracks and
+                <span class="articls_count">0</span> Articls Selected
+                <button class="btn btn-black" id="media_delete_btn">DELETE</button>
             </div>
             <!-- Video Gallery -->
 
@@ -358,7 +371,7 @@
                                     <p>Please use a modern browser to view this video.</p>
                                   </video> -->
 {#                                <img class='images' src="/static/images/loading.gif">#}
-                                <iframe class="videos tracks articles hide" width="100%" height="100%" scrolling="no" title="YouTube video player"
+                                <iframe class="videos tracks art    icles hide" width="100%" height="100%" scrolling="no" title="YouTube video player"
                                         src="/static/images/loading.gif"
                                         frameborder="0" allowfullscreen="">
                                 </iframe>
@@ -383,19 +396,19 @@
                     </div>
                     <div class="video-thumbnails large">
                         <ul>
-                            <li>
-                                <div class="thumb-progress-bar hide">
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-success" role="progressbar"
-                                             aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"
-                                             style="width: 50%">
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="" class="active">
-                                    <img src="/static/images/ajax-loader.gif" alt="">
-                                </a>
-                            </li>
+{#                            <li>#}
+{#                                <div class="thumb-progress-bar hide">#}
+{#                                    <div class="progress">#}
+{#                                        <div class="progress-bar progress-bar-success" role="progressbar"#}
+{#                                             aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"#}
+{#                                             style="width: 50%">#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <a href="" class="active">#}
+{#                                    <img src="/static/images/ajax-loader.gif" alt="">#}
+{#                                </a>#}
+{#                            </li>#}
                             {#                                    <li>#}
                             {#                                        <a href="">#}
                             {#                                            <img src="/static/images/latest/project1.png" alt="">#}
@@ -463,7 +476,7 @@
                     {#                                    </li>#}
                     {#                                </ul>#}
                     {#                            </div>#}
-                    <div class="video-desc" data-media-id="">
+                    <div class="video-desc" data-media_id="">
                         <h4 class="details"></h4>
                         <h5 class="edit-any title" placeholder="Title:"></h5>
                         {#                                <a href="">https://www.youtube.com/watch?v=brME5ZgKbUo</a>#}

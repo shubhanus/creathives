@@ -4,6 +4,15 @@
 var new_proj_id = 0;
 
 $(function () {
+    // $('.body-overlay').fadeIn()
+    $("html, body").stop().animate({scrollTop:0});
+    $('.dropdown').on('show.bs.dropdown', function(e){
+        $(this).find('.dropdown-menu').first().stop(true, true).slideDown('fast');
+    });
+    $('.dropdown').on('hide.bs.dropdown', function(e){
+        $(this).find('.dropdown-menu').first().stop(true, true).slideUp('fast');
+    });
+
     sticky_relocate();
     $.ajaxSetup({
         headers: {'X-CSRFToken': getCookie("csrftoken")}
@@ -32,6 +41,9 @@ $(function () {
         }
         e.stopPropagation()
     });
+    var media_count = 0;
+    var media_from = 0;
+    var media_to = 0;
 });
 
 
@@ -167,45 +179,25 @@ $('#proj-add').click(function (e) {
     /*Left Panel*/
     //last
     new_data = '<li class="project-sq">' +
-               '<a href="#" data-project-id="0">' +
-               '<img src="/static/images/Edit/titleImage.png" alt="New Project">' +
-               '<span class="hide"></span>' +
-               '<div class="overLay"></div>' +
-               '<!-- Portfolio Edit -->' +
-               '<img src="/static/images/Edit/empty-trash.png" class="emptyTrash" alt="delete">' +
-               '<img src="/static/images/Edit/trash.png" class="deleteTrash" alt="delete">' +
-               '</a>' +
-               <!-- Delete Prompt -->
-               '<div class="deletePrompt hide">' +
-               '<h4>Are you sure?</h4>' +
-               '<a href="#">Cancel</a>' +
-               '<a href="#">Yes, Delete</a>' +
-               '</div>' +
-               '</li>';
+        '<a href="#" data-project-id="0">' +
+        '<img src="/static/images/Edit/titleImage.png" alt="New Project">' +
+        '<span class="hide"></span>' +
+        '<div class="overLay"></div>' +
+        '<!-- Portfolio Edit -->' +
+        '<img src="/static/images/Edit/empty-trash.png" class="emptyTrash" alt="delete">' +
+        '<img src="/static/images/Edit/trash.png" class="deleteTrash" alt="delete">' +
+        '</a>' +
+        <!-- Delete Prompt -->
+        '<div class="deletePrompt hide">' +
+        '<h4>Are you sure?</h4>' +
+        '<a href="#">Cancel</a>' +
+        '<a href="#">Yes, Delete</a>' +
+        '</div>' +
+        '</li>';
 
     var new_div = $(new_data).hide();
-        $('.left-panel-scroll ul').prepend(new_div);
-        new_div.slideDown();
-
-    // $('.left-panel-scroll>ul').prepend(
-    //     '<li class="project-sq">' +
-    //     '<a href="#" data-project-id="0">' +
-    //     '<img src="/static/images/Edit/titleImage.png" alt="New Project">' +
-    //     '<span class="hide"></span>' +
-    //     '<div class="overLay"></div>' +
-    //     '<!-- Portfolio Edit -->' +
-    //     '<img src="/static/images/Edit/empty-trash.png" class="emptyTrash" alt="delete">' +
-    //     '<img src="/static/images/Edit/trash.png" class="deleteTrash" alt="delete">' +
-    //     '</a>' +
-    //     <!-- Delete Prompt -->
-    //     '<div class="deletePrompt hide">' +
-    //     '<h4>Are you sure?</h4>' +
-    //     '<a href="#">Cancel</a>' +
-    //     '<a href="#">Yes, Delete</a>' +
-    //     '</div>' +
-    //     '</li>'
-    // );
-
+    $('.left-panel-scroll ul').prepend(new_div);
+    new_div.slideDown();
     var edit = $('.pH_row-edit').removeClass('hide').hide();
     edit.slideDown();
     $('.left-panel-scroll ul li').first().addClass('active');
@@ -364,17 +356,20 @@ $('.pH_row-edit .media-left img').on('click', function (e) {
     e.stopPropagation()
 });
 
-
 /*new project and image upload*/
 $('#proj-img').on('change', function (e) {
     e.preventDefault();
-    // console.log(e);
     var $img = this.files[0];
     var $img_name = $img.name;
     var $img_ext = $img_name.substr($img_name.lastIndexOf('.') + 1);
-    // console.log($img_ext);
-    if ($img_ext != 'jpeg' && $img_ext != 'png' && $img_ext != 'jpg') {
-        alert('Wrong Image Type!! try again')
+    if ($img_ext.toLowerCase() != 'jpeg' && $img_ext != 'png' && $img_ext != 'jpg') {
+        $('#proj-img-error')
+            .text('Wrong Image Type!!')
+            .fadeIn();
+            setTimeout(function () {
+                $('#proj-img-error')
+                    .fadeOut('slow')
+            }, 1000);
     }
     else {
         var img_obj = new FormData();
@@ -386,7 +381,7 @@ $('#proj-img').on('change', function (e) {
             data: img_obj,
             processData: false,
             contentType: false,
-            'success': function (res) {
+            success: function (res) {
                 $('#proj-undo').addClass('hide');
                 $('#proj-done').removeClass('hide');
                 data = JSON.parse(res);
@@ -394,9 +389,10 @@ $('#proj-img').on('change', function (e) {
                 $('.left-panel-scroll ul img').first().attr('src', data.image_url + '?' + Date());
                 $('.left-panel-scroll li a').first().attr('data-project-id', data.id);
                 new_proj_id = data.id;
+            },
+            error: function (r) {
+                console.log(r)
             }
-        }).error(function (r) {
-            console.log(r)
         })
     }
 });
@@ -438,7 +434,13 @@ $('#prof-img').on('change', function (e) {
     var $img_name = $img.name;
     var $img_ext = $img_name.substr($img_name.lastIndexOf('.') + 1).toLowerCase();
     if ($img_ext != 'jpeg' && $img_ext != 'png' && $img_ext != 'jpg') {
-        alert('Wrong Image Format Please Try Agin With Image File Only !!!');
+        $('#profile-pic-error')
+            .text('Wrong Image Type!! Try again')
+            .fadeIn('slow')
+        setTimeout(function () {
+            $('#profile-pic-error')
+                .fadeOut('slow')
+        }, 1000);
         return;
     }
     else {
@@ -451,13 +453,18 @@ $('#prof-img').on('change', function (e) {
             data: img_obj,
             processData: false,
             contentType: false,
-            'success': function (res) {
+            success: function (res) {
                 data = JSON.parse(res);
-                $('.profile_pic_large>img').attr('src', data.image_url + '?' + new Date());
+                $('.profile_pic_large>img').hide("scale", 300, function () {
+                    $('.profile_pic_large>img')
+                    .attr('src', data.image_url + '?' + new Date())
+                    .show("scale", 300)
+                });
                 $('.header-profilePic img').attr('src', data.small_image + '?' + new Date());
+            },
+            error: function (r) {
+                console.log(r);
             }
-        }).error(function (r) {
-            console.log(r)
         })
     }
 });
@@ -484,7 +491,15 @@ $('#banner-img').on('change', function (e) {
     var $img_name = $img.name;
     var $img_ext = $img_name.substr($img_name.lastIndexOf('.') + 1).toLowerCase();
     if ($img_ext != 'jpeg' && $img_ext != 'png' && $img_ext != 'jpg') {
-        alert('Wrong Image Format Please Try Agin With Image File Only !!!');
+        $('#cover-pic-error')
+            .text('Wrong Image Type!! Try again')
+            .hide()
+            .fadeIn('slow')
+        setTimeout(function () {
+            $('#cover-pic-error')
+                .fadeOut('slow')
+        }, 1000);
+        // alert('Wrong Image Format Please Try Agin With Image File Only !!!');
         return;
     }
     else {
@@ -497,12 +512,18 @@ $('#banner-img').on('change', function (e) {
             data: img_obj,
             processData: false,
             contentType: false,
-            'success': function (res) {
+            success: function (res) {
                 data = JSON.parse(res);
-                $('#banner>img').attr('src', data.image_url + '?' + Date());
+                $('#banner>img').hide("clip", 300, function () {
+                    $('#banner>img')
+                    .attr('src', data.image_url + '?' + new Date())
+                    .show("clip", 300)
+                });
+                // $('#banner>img').attr('src', data.image_url + '?' + Date());
+            },
+            error: function (r) {
+                console.log(r);
             }
-        }).error(function (r) {
-            console.log(r)
         })
     }
 });
@@ -526,7 +547,6 @@ $('.yes').on('click', function (e) {
     var data = {
         'id': id
     };
-    console.log(data);
     var url = 'http://creathives.com/index/home/delete_project/';
     $.ajax({
         url: url,
@@ -538,12 +558,18 @@ $('.yes').on('click', function (e) {
             $(self).closest('li').remove();
             $('.lp_title>span').attr('data-count', --count);
             $('.lp_title>span').text(count);
-            $('.pl_thumbHolder').remove();
+            $('.pl_thumbHolder').fadeOut(function (e) {
+                $(this).remove()
+            });
             $('.left-panel-scroll ul li').first().click();
+            $('.pH_row').fadeOut(function (e) {
+                $(this).addClass('hide')
+            })
+        },
+        'error': function (res) {
+            console.log(res)
         }
-    }).error(function (r) {
-        console.log(r)
-    });
+    })
     e.stopPropagation();
 });
 
@@ -554,15 +580,15 @@ $('.yes').on('click', function (e) {
 function validateUploadedMediaFormat(type, files) {
     var validation;
     var approved_formats = {
-        'Videos': ['avi', 'AVI', 'mp4', 'MP4', 'm4v', 'M4V', '3gp', '3GP'],
-        'Tracks': ['mp3', 'MP3', 'wav', 'WAV'],
-        'Images': ['png', 'jpg', 'jpeg', 'PNG', 'JPG', 'JPEG'],
-        'Articles': ['doc', 'docx', 'pdf', 'DOC', 'DOCX', 'PDF']
+        'Videos': ['avi', 'mp4', 'm4v', '3gp'],
+        'Tracks': ['mp3', 'wav'],
+        'Images': ['png', 'jpg', 'jpeg'],
+        'Articles': ['doc', 'docx', 'pdf']
     };
 
     for (var i = 0; i < files.length; i++) {
         var file_name = files[i].name;
-        var ext = file_name.substr(file_name.lastIndexOf('.') + 1);
+        var ext = file_name.substr(file_name.lastIndexOf('.') + 1).toLocaleLowerCase();
         if (approved_formats[type].indexOf(ext) < 0) {
             validation = false;
         } else {
@@ -600,66 +626,49 @@ $('.media-tabs li').on('click', 'img', function (e) {
 $('#media_upload').on('change', function (e) {
     var files = e.target.files;
     var name = files[0].name;
-
-    // console.log(data_type)
     if (!validateUploadedMediaFormat(data_type, files)) {
-        alert('Wrong ' + data_type + ' type please choose a ' + data_type + ' file.');
+        //last
+        $('#media-upload-error')
+            .text('Wrong ' + data_type + ' file.')
+            .fadeIn('slow')
+        setTimeout(function () {
+            $('#media-upload-error')
+                .fadeOut('slow')
+        }, 1000);
         return;
     }
-    // console.log(files[0]);
     var img_obj = new FormData();
     img_obj.append('files', files[0]);
     img_obj.append('type', data_type);
     var url = 'http://creathives.com/index/home/media_upload/' + new_proj_id + '/';
-    // console.log('1');
     $.ajax({
         url: url,
         type: 'POST',
         data: img_obj,
         processData: false,
         contentType: false,
+        cache: false,
         xhr: function () {
             var xhr = $.ajaxSettings.xhr();
             //Upload progress
             if (xhr.upload) {
-                xhr.upload.addEventListener("progress", function (evt) {
-                    var percentComplete = (evt.loaded / evt.total) * 100;
-                    $('.thumb-progress-bar .progress-bar').width(percentComplete + '%');
+                xhr.upload.addEventListener("progress", function (e) {
+                    var percentComplete = (e.loaded * 100) / e.total;
+                    $('.right_viewArea .progress .progress-bar').width(percentComplete + '%');
                 }, false);
             }
             return xhr;
         },
         beforeSend: function (xhr, settings) {
-            $('body').css('overflow', 'hidden');
-            $('.body-overlay').fadeIn();
-            $('.video-modal').slideDown();
-            $('.video-desc .title').text('');
-            $('.video-desc .title').attr('contentEditable', 'true');
-            $('.video-desc .title').focus();
-            $('.video-desc .description').text('');
-            $('.video-desc .description').attr('contentEditable', 'true');
-            $('.thumb-progress-bar').removeClass('hide');
-            $('.thumb-progress-bar .progress-bar').width('0%');
-
+            $('.body-overlay').show();
+            $('.project_lists .progress .progress-bar').width(0);
         },
-        'success': function (res) {
-            console.log(res.type)
-            $('.mediaplayer').find('.'+res.type).removeClass('hide').attr('src', res.url);
-            // $('.mediaplayer iframe').attr('src', res.url);
-            // if(res.type=='images') {
-            $('.video-thumbnails li img').attr('src', res.thumb_img);
-            $('.video-viewer img').attr('src', res.thumb_img);
-            // }
-            $('.video-desc .details').text(res.type + ' Details');
-            $('.video-desc').attr('data-media-id', res.id);
-
-
-            $('.project_lists').prepend(
-                '<div class="pl_thumbHolder" data-description="' + res.description + '" ' +
+        success: function (res) {
+            data = '<div class="pl_thumbHolder" data-title="' + res.name + '" data-description="' + res.description + '" ' +
                 'data-type="' + res.type + '" data-url="' + res.url + '" data-thumb_url="' + res.thumb_img + '"' +
-                ' id="media-' + res.id + '">' +
+                'id="media-' + res.id + '"data-id="' + res.id + '">' +
                 '<div class="thumb-edit-overlay"></div>' +
-                '<div class="thumbnail">' +
+                '<div class="thumbnail" >' +
                 '<img src="' + res.thumb_img + '" alt="' + res.name + '" id="th_img-' + res.id + '">' +
                 '<div class="caption">' +
                 '<p>' + res.name + '</p>' +
@@ -674,23 +683,39 @@ $('#media_upload').on('change', function (e) {
                 '<a href=""><img src="/static/images/Edit/img-pen.png" alt="Edit"></a>' +
                 '</div>' +
                 '</div>' +
-                '</div>'
-            );
+                '</div>';
+
+            $('.project_lists').prepend(data);
+            $('.body-overlay').fadeOut();
+
         }
     }).error(function (r) {
         console.log(r)
-
     });
     //$('.icn').show();
     e.stopPropagation();
 });
 
 /*update media details*/
+//double click
+$('.video-desc .title , .description').dblclick(function (e) {
+    $(this).attr('unselectable', 'on')
+        .css('user-select', 'none')
+        .on('selectstart', false)
+        .text('')
+        .attr('contentEditable','true')
+});
+
 $('.video-desc').on('blur', '.title, .description', function (e) {
-    media_id = $('.video-desc').attr('data-media-id');
+    $(this).css("cursor", "default")
+        .attr('unselectable', 'on')
+        .attr('contenteditable', false)
+        .css('user-select', 'none')
+        .on('selectstart', false);
+    media_id = $('.video-desc').data('media_id');
     var detail = {
-        'title': $('.video-desc .title').text().trim(),
-        'description': $('.video-desc .description').text().trim()
+        'title': $('.video-desc .title').text().replace('Title:', '').trim(),
+        'description': $('.video-desc .description').text().replace('Description:', '').trim()
     };
     var url = 'http://creathives.com/index/home/media_upload/' + media_id + '/';
     $.ajax({
@@ -699,7 +724,8 @@ $('.video-desc').on('blur', '.title, .description', function (e) {
         data: JSON.stringify(detail),
         'success': function (res) {
             $('#media-' + res.id + ' p').text(res.title);
-            $('#media-' + res.id).attr('data-description', res.description);
+            $('#media-' + res.id).data('description', res.description);
+            $('#media-' + res.id).data('title', res.title);
         }
     }).error(function (r) {
         console.log(r)
@@ -746,12 +772,14 @@ $('#proj-done').on('click', function (e) {
 
 
 /*----------------get project media and details-------------------------*/
-var media_count;
-var media_from = 0;
-var media_to = 0;
-$('.left-panel-scroll ul').on('click', '.project-sq', function (e) {
+media_count = 0;
+media_from = 0;
+media_to = 0;
+$('.left-panel-scroll').on('click', '.project-sq', function (e) {
     e.preventDefault();
+    $(this).addClass('active')
     media_type = get_type($('.nav-categories .active img').attr('alt'));
+    console.log(media_type)
     media_from = 0;
     media_to = 6;
     empty_project = $('.left-panel-scroll ul a').first().attr('data-project-id');
@@ -761,15 +789,14 @@ $('.left-panel-scroll ul').on('click', '.project-sq', function (e) {
     $('#proj-undo').addClass('hide');
     $('#proj-done').addClass('hide');
     $('#proj-add').removeClass('hide');
-    //$('.project-sq a[data-project-id=0]').parent().remove();
-    id = $(this).find('a').attr('data-project-id');
+    id = $(this).find('a').data('project-id');
     var url = 'http://creathives.com/index/home/get_project_details/' + id + '/';
     $.ajax({
         url: url,
         method: 'GET',
         'success': function (res) {
             $('#rightView_content .pH_row').removeClass('hide');
-            $('#rightView_content .pH_row').attr('data-p-id', id);
+            $('#rightView_content .pH_row').data('p-id', id);
             $('#rightView_content .pH_row .p_mt').text(res.title);
             $('#rightView_content .pH_row .p_st').text(res.type);
             $('#rightView_content .pH_row p').text(res.description);
@@ -790,7 +817,7 @@ $('.left-panel-scroll ul').on('click', '.project-sq', function (e) {
 
 function append_media(res_media) {
     jQuery.each(res_media, function (i, val) {
-        data = '<div class="pl_thumbHolder" data-description="' + val.description + '" ' +
+        data = '<div class="pl_thumbHolder" data-title="' + val.name + '" data-description="' + val.description + '" ' +
             'data-type="' + val.type + '" data-url="' + val.url + '" data-thumb_url="' + val.thumb_img + '"' +
             ' id="media-' + val.id + '"data-id="' + val.id + '">' +
             '<div class="thumb-edit-overlay"></div>' +
@@ -801,12 +828,12 @@ function append_media(res_media) {
             '<a href=""><img src="/static/images/Header/' + val.type + '-black.png" alt="' + val.type + '"></a>' +
             '</div>' +
             <!-- Portfolio Edit -->
-            '<div class="thumb-edit-icons hide">' +
-            '<div class="squaredThree hide">' +
-            '<input type="checkbox" value="None" name="check" />' +
+            '<div class="thumb-edit-icons">' +
+            '   <div class="squaredThree">' +
+            '<input id="test_1" type="checkbox" value="None" name="check" />' +
             '<label for="test_1"></label>' +
             '</div>' +
-            '<a href=""><img src="/static/images/Edit/img-pen.png" alt="Edit"></a>' +
+            '<a href="" class="hide"><img src="/static/images/Edit/img-pen.png" alt="Edit"></a>' +
             '</div>' +
             '</div>' +
             '</div>';
@@ -858,42 +885,92 @@ $('.project_lists').on('click', '.pl_thumbHolder', function (e) {
     $('.body-overlay').fadeIn();
     $('.video-modal').slideDown();
     project_name = $('.left-panel-scroll').find('.active span').text().trim();
-    media_desc = $(this).attr('data-description');
-    media_type = $(this).attr('data-type');
-    media_url = $(this).attr('data-url');
-    media_thumb = $(this).attr('data-thumb_url');
-    media_title = $(this).find('.caption p').text().trim();
-    media_id = $(this).data('id');
     $('.video-modal h4').first().text(project_name);
+    getMediaThumbs($(this));
+    $('.video-thumbnails ul li').first().trigger('click');
+});
+
+function previewMedia(current){
+    media_desc = current.data('desc');
+    media_type = current.data('type');
+    media_url = current.data('url');
+    media_thumb = current.data('thumb_url');
+    media_title = current.data('media_title');
+    media_id = current.data('media_id');
+    $('.mediaplayer iframe, .mediaplayer iframe img')
+        .addClass('hide')
+        .attr('src', '/static/images/loading.gif');
     $('.mediaplayer').find('.'+media_type).removeClass('hide').attr('src', media_url);
     if(media_type == 'tracks')
         $('.mediaplayer').css('background-image', 'url(/static/images/audio.jpg)');
-
-    $('.video-thumbnails li img').attr('src', media_thumb);
-    // $('.video-viewer img').attr('src', media_thumb);
     $('.video-desc .details').text(media_type + ' Details');
     $('.video-desc .title').text('Title: ' + media_title);
     $('.video-desc .description').text('Description:' + media_desc);
-    getMoreMedia(media_id);
+    console.log(media_id);
+    $('.video-desc').attr('data-media_id', media_id);
+}
+
+$('.video-thumbnails ul').on('click', 'li', function (e) {
+    e.preventDefault();
+    $(this)
+        .siblings()
+        .children('a')
+        .removeClass('active')
+        .end()
+        .end()
+        .children('a')
+        .addClass('active');
+    previewMedia($(this));
 });
 
-function getMoreMedia(id){
-    // for()
-    alert(id);
+function getMediaThumbs(current){
+    for(i=0; i<5; i++){
+        if(!current.data('id')){
+            return
+        }
+        media_desc = current.data('description');
+        media_type = current.data('type');
+        media_url = current.data('url');
+        media_thumb = current.data('thumb_url');
+        media_title = current.data('title');
+        media_id = current.data('id');
+        data = '<li data-desc="'+ media_desc +'" ' +
+            'data-type="' + media_type + '"' +
+            'data-url="' + media_url + '"' +
+            'data-thumb_url="' + media_thumb + '"' +
+            'data-media_title="' + media_title + '"' +
+            'data-media_id="' + media_id + '">' +
+            '<div class="thumb-progress-bar hide">' +
+            '<div class="progress">' +
+            '<div class="progress-bar progress-bar-success" role="progressbar"' +
+            'aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"' +
+            'style="width: 50%">' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<a href="" class="" >' +
+            '<img src="' + media_thumb+ '?' + Date() + '" alt="' + media_title + '">' +
+            '</a>' +
+            '</li>'
+        $(data).appendTo($('.video-thumbnails ul')).hide().fadeIn('slow');
+        current = current.next()
+    }
 }
 
 $('.btn-done').on('click', function (e) {
     e.preventDefault();
     $('body').css('overflow', 'visible');
-    $('.video-modal').slideUp('fast');
     // $('.video-modal').fadeOut();
     $('.body-overlay').fadeOut();
-    $('iframe').attr('src', '/static/images/loading.gif');
-    $('.video-thumbnails li img').attr('src', '/static/images/ajax-loader.gif');
-    $('.video-viewer img').attr('src', '/static/images/ajax-loader.gif');
-    $('.mediaplayer').css('background-image', 'url(/static/images/loading.gif)');
-    $('.mediaplayer iframe').addClass('hide');
-    $('.mediaplayer img').addClass('hide');
+    $('.video-modal').slideUp('fast', function(){
+        $('iframe').attr('src', '/static/images/loading.gif');
+        $('.video-thumbnails li img').attr('src', '/static/images/ajax-loader.gif');
+        $('.video-viewer img').attr('src', '/static/images/ajax-loader.gif');
+        $('.mediaplayer').css('background-image', 'url(/static/images/loading.gif)');
+        $('.mediaplayer iframe').addClass('hide');
+        $('.mediaplayer img').addClass('hide');
+        $('.video-thumbnails ul').empty();
+    });
 });
 /*-----------------------------------------------------------------------*/
 
@@ -908,7 +985,6 @@ function getDetailsYT(url, callback) {
     $.ajax({
         url: YTLink,
         type: 'GET',
-        // async: 'false',
         success: function (data) {
             var media = {};
             if (data && data.hasOwnProperty('items') && data.items[0] != undefined) {
@@ -925,19 +1001,18 @@ function getDetailsYT(url, callback) {
         error: function (r) {
             console.log(r);
         }
-
     });
-    // return media;
-};
+}
 
 
-$('.media-upload-URL input').on('paste, keypress', function (e) {
-    $('#yt-add').fadeIn().removeClass('hide');
+$('.media-upload-URL input').on('keypress', function (e) {
+    if (!($(this).val().trim().length == 0))
+        $('#yt-add').fadeIn().removeClass('hide');
     e.stopPropagation();
 });
 
 $('.media-upload-URL').on('keyup', 'input', function (e) {
-    if ($(this).val().length == 0) {
+    if ($(this).val().trim().length == 0) {
         $('#yt-add').fadeOut();
     }
 });
@@ -946,7 +1021,55 @@ $('#yt-add').on('click', function (e) {
     e.preventDefault();
     var input = $('.media-upload-URL input')
     var url = input.val();
+    var project_id = $('#rightView_content .pH_row').data('p-id')
     getDetailsYT(url, function (callback) {
+        data = callback;
+        console.log(data)
+        var url = 'http://creathives.com/index/home/youtube_media_upload/' + project_id + '/';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            dataType: "json",
+            xhr: function () {
+                var xhr = $.ajaxSettings.xhr();
+                //Upload progress
+                if (xhr.upload) {
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        var percentComplete = (evt.loaded / evt.total) * 100;
+                        $('.thumb-progress-bar .progress-bar').width(percentComplete + '%');
+                    }, false);
+                }
+                return xhr;
+            },
+            success: function (res) {
+                console.log(res);
+                data = '<div class="pl_thumbHolder" data-title="' + res.name + '" data-description="' + res.description + '" ' +
+                    'data-type="' + res.type + '" data-url="' + res.url + '" data-thumb_url="' + res.thumb_img + '"' +
+                    ' id="media-' + res.id + '"data-id="' + res.id + '">' +
+                    '<div class="thumb-edit-overlay"></div>' +
+                    '<div class="thumbnail" >' +
+                    '<img src="' + res.thumb_img + '" alt="' + res.name + '" id="th_img-' + res.id + '">' +
+                    '<div class="caption">' +
+                    '<p>' + res.name + '</p>' +
+                    '<a href=""><img src="/static/images/Header/' + res.type + '-black.png" alt="' + res.type + '"></a>' +
+                    '</div>' +
+                    <!-- Portfolio Edit -->
+                    '<div class="thumb-edit-icons hide">' +
+                    '<div class="squaredThree hide">' +
+                    '<input type="checkbox" value="None" name="check" />' +
+                    '<label for="test_1"></label>' +
+                    '</div>' +
+                    '<a href=""><img src="/static/images/Edit/img-pen.png" alt="Edit"></a>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+                $('.project_lists').prepend(data);
+            }
+        }).error(function (r) {
+            console.log(r)
+
+        });
         youtubemediaDisplay(callback);
     });
     $('.media-upload-URL input').val('');
@@ -958,8 +1081,9 @@ function youtubemediaDisplay(media) {
     $('.video-modal').slideDown();
     $('.body-overlay').fadeIn();
     // $('.video-modal h4').first().text(project_name);
-    var watch = '//www.youtube.com/embed/' + media['media_url'] + '?showinfo=0&amp;iv_load_policy=3&amp;modestbranding=1&amp;nologo=1&amp;controls=2&amp;rel=0&amp;autohide=1&amp;wmode=transparent&amp;enablejsapi=1&amp;html5=1&amp;'
+    var watch = '//www.youtube.com/embed/' + media['media_url']
     var fetch = 'www.youtube.com/watch?v=' + media['media_url'];
+    $('.mediaplayer iframe').removeClass('hide');
     $('.mediaplayer iframe').attr('src', watch);
     $('.video-thumbnails li img').attr('src', media['thumbnail']);
     $('.video-viewer img').attr('src', media['thumbnail']);
@@ -976,7 +1100,7 @@ $('.nav-categories li, .header-midMenu a').on('click', function (e) {
     $('.header-midMenu .active').removeClass('active');
     $('.icn').addClass('hide');
     data_type = $(this).attr('data-type');
-        $('.icn[data-type="' + data_type + '"]').removeClass('hide')
+    $('.icn[data-type="' + data_type + '"]').removeClass('hide')
     if(data_type == 'all')
         $('.icn').removeClass('hide');
     var className = $(this).attr('class');
@@ -984,7 +1108,7 @@ $('.nav-categories li, .header-midMenu a').on('click', function (e) {
     media_from = 0;
     media_to = 6;
     media_type = get_type($('.nav-categories .active img').attr('alt'));
-    id = $('#rightView_content .pH_row').attr('data-p-id');
+    id = $('#rightView_content .pH_row').data('p-id');
     getMedia(id, media_type, media_from, media_to, function (res) {
         res_media = JSON.parse(res).data;
         media_count = JSON.parse(res).count;
@@ -992,3 +1116,63 @@ $('.nav-categories li, .header-midMenu a').on('click', function (e) {
         append_media(res_media);
     });
 });
+
+
+/*=====================media delete========================*/
+del_arr = []
+$(".project_lists").on('click', ".squaredThree" , function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var ckbox = $(this).find("input[type='checkbox']");
+    ckbox.prop("checked", !ckbox.prop("checked"));
+    check_div = $(this).closest('.pl_thumbHolder');
+    check_data = check_div.data('id');
+    check_type = check_div.data('type');
+    count = $('.countDisplay').find('.' + check_type + '_count')
+    if(ckbox.prop('checked')) {
+        del_arr.push(check_data);
+        count.text(parseInt(count.text())+1)
+        if(del_arr)
+            $('.countDisplay').removeClass('hide').hide().fadeIn();
+    }
+    else {
+        del_arr.pop(check_data);
+        count.text(parseInt(count.text())-1)
+        if(del_arr == '')
+            $('.countDisplay').fadeOut();
+    }
+    $('.countDisplay').data('selection', del_arr)
+});
+
+$('#media_delete_btn').on('click', function(e){
+    e.preventDefault()
+    data = {
+        'id': $('.countDisplay').data('selection'),
+        'project_id': $('#rightView_content .pH_row').data('p-id'),
+        // 'type':
+    };
+    var url = 'http://creathives.com/index/home/delete_media/';
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: data,
+        'dataType': "json",
+        'success': function (res) {
+            console.log(res)
+            if(res.status == 'Project not Exist')
+                return
+            deleteAndResetCheck(data.id)
+        }
+    }).error(function (r) {
+        console.log(r)
+    });
+});
+
+function deleteAndResetCheck(id){
+    $.each(id, function (index, value) {
+        $('.project_lists').find('#media-' + value).fadeOut(function() { $(this).remove() });
+    });
+    $('.project_lists').find('input[type=checkbox]:checked').removeAttr('checked');
+    $('.countDisplay span').text('0');
+    $('.countDisplay').fadeOut();
+}

@@ -16,10 +16,11 @@
 
 
   <!-- Favicons -->
-  <link rel="shortcut icon" href="/static/images/fav.png">
+  <link rel="shortcut icon" href="/static/images/favicon.ico">
 
   <!-- Js Links -->
   <script src="/static/js/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <script src="/static/js/jquery.ui.js" type="text/javascript"></script>
   <script src="/static/js/bootstrap.min.js" type="text/javascript"></script>
   <script src="/static/js/jquery.nicescroll.min.js" type="text/javascript"></script>
   <script src="/static/js/owl.carousel.js" type="text/javascript"></script>
@@ -43,7 +44,13 @@
   </style>
 </head>
 <body>
-  <div class="body-overlay"></div>
+  <div class="body-overlay">
+    <!-- <div class="progress">
+    <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="80" aria-valuemax="100" style="width:0%">
+    </div>
+  </div> -->
+  </div>  
+  
     <div id="login"></div>
   <!-- Header -->
   <section id="header">
@@ -103,7 +110,19 @@
           </a>
           </span>
           <span>
-            <a href="{% url 'auth:logout' %}?next=/"><img src="/static/images/arrow-down.png" alt="View"></a>
+               <div class="dropdown">
+{#                <button class="btn btn-primary dropdown-toggle" type="button" >#}
+                    <a href="#" data-toggle="dropdown">
+                        <img src="/static/images/arrow-down.png" class="dropdown-toggle" alt="View">
+                    </a>
+{#                    <span class="caret"></span></button>#}
+                      <ul class="dropdown-menu">
+                        <li><a href="{% url 'auth:logout' %}?next=/">LOGOUT</a></li>
+                        <li class="divider log-div"></li>
+                        <li class="disabled"><a href="#">SETIINGS</a></li>
+{#                        <li><a href="#">JavaScript</a></li>#}
+                      </ul>
+                </div>
           </span>
         </div>
       </div>
@@ -123,5 +142,5 @@
             {% csrf_token %}
         </form>
       <input type="file" class="hide" name="prof_banner_update" id="banner-img">
-
   </section>
+<div id="cover-pic-error" class="error" style="float: right"></div>

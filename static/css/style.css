@@ -381,6 +381,8 @@ body{
 }
 .pl_thumbHolder .thumbnail .caption p{
 	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden;
 }
 .pl_thumbHolder .thumbnail .caption p:first-child{
 	width: 75%;
@@ -1211,7 +1213,7 @@ body{
 	position: absolute;
 	width: 100%;
 	top: 0;
-	display: none;
+	/*display: none;*/
 }
 .thumb-edit:hover .thumb-edit-icons{
 	display: block !important;
@@ -1347,11 +1349,35 @@ body{
 .profile_skill {
 	padding: 0 10px;
 }
+
 .divider{
 	border-left: 1px solid #ddd;
 	padding: 20px 0;
 	margin-top: 40px;
 }
+
+.dropdown .divider{
+	background-color: #2E2D2D;
+	padding: 0px 0;
+}
+
+.dropdown ul{
+	background-color: black;
+}
+
+.dropdown a{
+	outline: none;
+}
+
+.dropdown ul li a{
+	color: #bbbbbb;
+}
+
+.dropdown ul li a:hover {
+	background-color: black;
+	color: white;
+}
+
 @media screen and (max-width: 767px){
 	.profile_skill {
 		text-align: center;
@@ -1725,4 +1751,10 @@ body{
 [contenteditable=true]:empty:before {
 	content: attr(placeholder);
 	color: #cbcbcb;
+}
+
+.error{
+	color: red;
+	font-family: 'MavenProBold';
+	text-align: center;
 }

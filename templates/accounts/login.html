@@ -1,68 +1,78 @@
-{% include 'headersheet.html' %}
-
-<div class="video-modal" id="user-login">
-    <div class="gallery-header">
-        <h3 style="text-align: center;">Login or Register</h3>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="/static/css/style login.css" rel='stylesheet' type='text/css' />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!--webfonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text.css'/>
+    <script src="/static/js/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="/static/js/jquery.validate.min.js" type="text/javascript"></script>
+    <!--//webfonts-->
+    <!-- Favicons -->
+  <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <style>
+        .login .error{
+            color: red;
+            font-size: smaller;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="main">
+    <div class="header" >
+        <h1>Login or Create a Free Account!</h1>
     </div>
-    <div class="video-modal-center">
-        <div style="height: 300px; margin-left: 110px; margin-top: 50px; width: 80%; border-top: 1px #b7b7b7 solid">
-            <div style="width: 40%; margin-left: 35%; margin-top: 5%;">
-                <div style="border: 1px #ccc solid; border-top: 0px; height: 350px;">
-                    <ul class="nav-categories">
-                        <li class="active" id="log">
-                            <a href="#">
-                                <img alt="all" src="/static/images/login.png">
-                                <span>Login</span>
-                            </a>
-                        </li>
-                        <li id="reg">
-                            <a href="#">
-                                <img alt="user-add" src="/static/images/glyphicons_006_user_add.png">
-                                <span>Register</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <div id='dv-log' style="width: 80%; margin:25% 0% 0% 10%; display: block;">
-                        <form role="form" id="login-form">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <input type="email" required class="form-control" id="e-mail" placeholder="Enter Email">
-                            </div>
-
-                            <div class="form-group">
-                                <input type="password" required class="form-control" id="pwd" placeholder="Password">
-                            </div>
-                            <button id="login-btn" class="btn btn-warning" style="float: right; width: 50%">Login</button>
-                        </form>
-                    </div>
-                    <div id='dv-reg' style="width: 80%; margin:10% 0% 0% 10%; display: none;">
-                        <form role="form">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <input type="text" required class="form-control" id="Email" placeholder="Email">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" required class="form-control" id="fname" placeholder="Mobile No">
-                            </div>
-
-                            <div class="form-group">
-                                <input type="password" required class="form-control" id="pwd" placeholder="Password">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" required class="form-control" id="cpwd"
-                                       placeholder="Re-Enter Password">
-                            </div>
-                            <button id="bt-reg" class="btn btn-warning" style="float: right; width: 50%">Register
-                            </button>
-                        </form>
-                    </div>
-                </div>
+    <p>CreatHives is a new platform connecting artists to projects. CreatHives, cater to both ends of a creative collaboration, finding the right artist for creative needs and the artist finding the right kind of work. Now you can meet other artists, enthusiasts and network all you want with just a few clicks! </p>
+    <form id="register">
+        <ul class="left-form">
+            <h2>New Account:</h2>
+            <li>
+                <input name="email" type="email" placeholder="EMAIL"/>
+{#                <a href="#" class="name"> </a>#}
+                <div class="clear"> </div>
+            </li>
+            <li>
+                <input name="contact" type="text" placeholder="CONTACT NO"/>
+{#                <a href="#" class="name"> </a>#}
+                <div class="clear"> </div>
+            </li>
+            <li>
+                <input name="password" id='password' type="password" placeholder="PASSWORD"/>
+{#                <a href="#" class="password"> </a>#}
+                <div class="clear"> </div>
+            </li>
+            <li>
+                <input name="cpassword" type="password" placeholder="RE-ENTER PASSWORD"/>
+{#                <a href="#" class="cpassword"> </a>#}
+                <div class="clear"> </div>
+            </li>
+{#            <label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i>Please inform me of upcoming  w3layouts, Promotions and news</label>#}
+            <input type="submit" id="reg_btn" value="Create Account">
+            <div class="clear"> </div>
+        </ul>
+        </form>
+        <form id="login">
+        <ul class="right-form">
+            <h3>Login:</h3>
+            <div>
+{#                9829187820#}
+                <li><input name="email" type="email"  placeholder="Email" required/></li>
+                <li> <input name="password" type="password"  placeholder="Password" required/></li>
+                <div id="login-error" class="login error"></div>
+                <h4 style="color: white;">---------------------------</h4>
+                <input id="login_btn" type="submit" value="Login">
             </div>
-        </div>
-    </div>
+            <div class="clear"> </div>
+        </ul>
+        <div class="clear"> </div>
+        </form>
+
 </div>
-{#<script src="/static/js/script.js"></script>#}
 <script src="/static/js/auth.js" type="text/javascript"></script>
-<script src="/static/js/tabs-switch.js" type="text/javascript"></script>
 </body>
 </html>

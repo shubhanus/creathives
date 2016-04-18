@@ -12,7 +12,7 @@ $(document).ready(function(){
 	});
 
 
-	if ($(window).width() >= 768) {  
+	if ($(window).width() >= 768) {
 		function setHeight() {
 			windowHeight = $(window).height();
 			$('#main_Content').css('min-height', windowHeight);
@@ -28,14 +28,12 @@ $(document).ready(function(){
 
 
 
-		$('.leftPanel ul li').on('click', function(event){
+		$('.leftPanel ul').on('click', 'li', function(event){
 			event.preventDefault();
 			$('#leftView').addClass('mob-none');
 			$('#rightView').removeClass('mob-none');
 			$('.leftPanel ul li').removeClass('active');
-			//$('.deletePrompt').hide();
 			$(this).addClass('active');
-			//alert('clicked')
 		});
 		$('.video-thumbnails.large ul li a').click(function(event){
 			event.preventDefault();
@@ -53,11 +51,11 @@ $(document).ready(function(){
 		// Nice scroll
 		$(".left-panel-scroll").niceScroll();
 
-	}  
+	}
 
 	$( ".close-progress" ).click(function() {
 		$( this ).parent().slideUp("slow")
-	});   
+	});
 
 	// Media tabs upload
 
